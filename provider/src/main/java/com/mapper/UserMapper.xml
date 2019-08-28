@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd](http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.mapper.UserMapper">
+    <select id="getUserByPhoneNumber" parameterType="String" resultType="com.pojo.User">
+        select
+            user_id userId,
+            user_name userName,
+            user_phone userPhone,
+            user_address userAddress,
+            user_code userCode,
+            user_create userCreate,
+            user_status userStatus
+            user_email userEmail
+        from users
+        where user_phone = #{phoneNumber}
+    </select>
+    <select id="getUserByEmail" parameterType="String" resultType="com.pojo.User">
+        select
+        user_id userId,
+        user_name userName,
+        user_phone userPhone,
+        user_address userAddress,
+        user_code userCode,
+        user_create userCreate,
+        user_status userStatus
+        user_email userEmail
+        from users
+        where user_phone = #{Email}
+    </select>
+
+</mapper>

@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd](http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.mapper.OrderMapper">
+    <select id="getOrderInfo" parameterType="com.dto.SelectOrderDTO" resultType="com.vo.OrderVO">
+        select
+        o.order_id orderId,
+        o.user_id userId,
+        o.product_id productId,
+        o.payment payment,
+        o.quantity quantity,
+        o.status status,
+        o.pruchase_date pruchaseDate,
+        u.user_name userName,
+        p.product_name productName
+        from orders o
+        inner join users u on u.user_id = o.user_id
+        inner join product p on p.product_id = o.product_id
+        <where>
+            <if test="userId!=null and userId !=0">
+                and o.user_id = #{userId}
+            </if>
+            <if test="productName !=null and productName!=''">
+                and  p.product_name like '%${productName}%'
+            </if>
+            <if test="OrderStatus!=null and OrderStatus!=10">
+                and o.status = #{OrderStatus}
+            </if>
+        </where>
+    </select>
+    <select id="getOrderStatus" resultType="com.pojo.OrderStatus">
+        select order_status_id orderStatusId,order_status_name orderStatusName
+        from order_status
+    </select>
+</mapper>

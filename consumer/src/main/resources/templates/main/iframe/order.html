@@ -1,0 +1,100 @@
+<!DOCTYPE html >
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <title>layout 后台大布局 - Layui</title>
+    <link rel="stylesheet" th:href="@{/layui/css/layui.css}">
+    <script th:src="@{/layui/layui.js}"></script>
+    <script th:src="@{https://cdn.bootcss.com/jquery/1.12.4/jquery.min.js}"></script>
+</head>
+<body class="layui-layout-body">
+<div class="layui-layout layui-layout-admin">
+<div th:replace="main/common::header"></div>
+    <div th:replace="main/common::left"></div>
+
+<div class="layui-body">
+
+    <input id="userId" hidden th:value='${userId}'>
+    <!--  查询条件表单项 -->
+    <form class="layui-form" action="">
+
+        <fieldset class="layui-elem-field layui-field-title" style="margin-top: 20px;">
+            <legend>查询条件</legend>
+        </fieldset>
+        <!--            软件名称 所属平台 APP状态-->
+        <div class="layui-form-item">
+
+            <div class="layui-inline">
+                <label class="layui-form-label">商品名称:</label>
+                <div class="layui-input-inline">
+                    <input type="text" id="productName" name="productName" autocomplete="off" class="layui-input">
+                </div>
+            </div>
+            <div class="layui-inline">
+                <label class="layui-form-label">支付状态:</label>
+                <div class="layui-input-inline">
+                    <select id="orderStatus" name="orderStatus" class="layui-input">
+                        <option value="10">--请选择--</option>
+                        <!--${statu.orderStatusId==1?'已支付':'未支付'}-->
+                        <option th:each="statu : ${status}" th:value="${statu.orderStatusId}" th:text="${statu.orderStatusName}"></option>
+                    </select>
+                </div>
+            </div>
+            <div class="layui-inline">
+                <div class="layui-input-inline">
+                    <button type="button" id="searchBtn" name="searchBtn">搜索</button>
+                </div>
+            </div>
+        </div>
+
+    </form>
+
+            <table class="layui-hide" id="orderTable" lay-filter="orderTable"></table>
+</div>
+<div th:replace="main/common::footer"></div>
+
+</div>
+</body>
+<script>
+
+    $(function () {
+        console.log($("#userId").val());
+    })
+
+</script>
+<script th:inline="none">
+
+    //JavaScript代码区域
+    layui.use(['element','table'], function(){
+        var table = layui.table;
+        var element = layui.element;
+        var $ = layui.jquery;
+
+        var mainTable = table.render({
+            elem: '#orderTable'
+            ,url:'/getOrderInfo'
+            ,cols: [[
+                {field:'orderId',title: '订单号'}
+                ,{field:'userName',title: '用户名'}
+                ,{field:'productName', title: '商品名称'}
+                ,{field:'quantity',  title: '购买数量'}
+                ,{field:'payment', title: '支付金额'}
+                ,{field:'pruchaseDate', title: '购买日期'}
+                ,{field:'status', title: '支付状态'}
+            ]]
+            ,page: true
+        });
+
+        $("#searchBtn").click(function () {
+            table.reload('orderTable',{
+                where:{
+                    userId: $("#userId").val()
+                    ,productName: $("#productName").val()
+                    ,orderStatus: $("#orderStatus").val()
+                }
+            })
+        });
+    });
+</script>
+</html>
