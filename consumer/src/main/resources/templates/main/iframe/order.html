@@ -56,12 +56,16 @@
 
 </div>
 </body>
-<script>
 
+
+<!--修改栏-->
+<script type="text/html" id="barDemo">
+    <a class="layui-btn layui-btn-xs" lay-event="toPay">去支付</a>
+</script>
+<script>
     $(function () {
         console.log($("#userId").val());
     })
-
 </script>
 <script th:inline="none">
 
@@ -82,10 +86,13 @@
                 ,{field:'payment', title: '支付金额'}
                 ,{field:'pruchaseDate', title: '购买日期'}
                 ,{field:'status', title: '支付状态'}
+                ,{fixed: 'right', title:'操作', toolbar: '#barDemo', width:150}
             ]]
             ,page: true
         });
 
+
+        //搜索按钮
         $("#searchBtn").click(function () {
             table.reload('orderTable',{
                 where:{
@@ -94,6 +101,18 @@
                     ,orderStatus: $("#orderStatus").val()
                 }
             })
+        });
+
+
+        //监听行工具事件
+        table.on('tool(orderTable)', function(obj){
+            var data = obj.data;
+            console.log(obj)
+            if(obj.event === 'toPay'){
+                layer.confirm('点击去支付', function(index){
+                    layer.close(index);
+                });
+            }
         });
     });
 </script>

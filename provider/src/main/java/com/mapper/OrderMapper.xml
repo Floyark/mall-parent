@@ -7,7 +7,6 @@
         select
         o.order_id orderId,
         o.user_id userId,
-        o.product_id productId,
         o.payment payment,
         o.quantity quantity,
         o.status status,
@@ -16,6 +15,7 @@
         p.product_name productName
         from orders o
         inner join users u on u.user_id = o.user_id
+        inner join order_product op on op.
         inner join product p on p.product_id = o.product_id
         <where>
             <if test="userId!=null and userId !=0">

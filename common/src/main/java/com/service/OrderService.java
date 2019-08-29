@@ -11,8 +11,7 @@ import java.util.List;
 
 public interface OrderService {
     //获取order表信息
-    public PageInfo<OrderVO> getOrderInfo(SelectOrderDTO selectOrderDTO);
+    PageInfo<OrderVO> getOrderInfo(SelectOrderDTO selectOrderDTO);
     //获取订单状态信息(填充下拉栏)
-    public List<OrderStatus> getOrderStatus();
-
+    List<OrderStatus> getOrderStatus();
 }

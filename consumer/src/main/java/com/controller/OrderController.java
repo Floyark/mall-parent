@@ -10,6 +10,9 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import java.math.BigDecimal;
+import java.util.Date;
+
 @Controller
 public class OrderController {
 
@@ -18,8 +21,17 @@ public class OrderController {
 
     @RequestMapping("/getOrderInfo")
     public @ResponseBody TableResponse getOrderInfoBySelected(SelectOrderDTO selectOrderDTO){
-        PageInfo<OrderVO> orderInfo = orderService.getOrderInfo(selectOrderDTO);
-        return new TableResponse((int)orderInfo.getTotal(),orderInfo.getList());
+//        PageInfo<OrderVO> orderInfo = orderService.getOrderInfo(selectOrderDTO);
+//        return new TableResponse((int)orderInfo.getTotal(),orderInfo.getList());
+
+        OrderVO orderVO = new OrderVO();
+        orderVO.setOrderId("dqwdqw");
+        orderVO.setUserName("12321312");
+        orderVO.setQuantity(19);
+        orderVO.setPayment(new BigDecimal(123));
+        orderVO.setStatus(1);
+        orderVO.setPruchaseDate(new Date());
+        return new TableResponse(10,orderVO);
     }
 
 }

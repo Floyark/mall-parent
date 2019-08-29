@@ -6,8 +6,10 @@ import com.service.OrderService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
+import javax.jws.WebParam;
 import javax.servlet.http.HttpSession;
 import javax.validation.constraints.Max;
 import java.util.ArrayList;
@@ -35,17 +37,32 @@ public class AdminPageController {
         return new ModelAndView("main/iframe/cate_one");
     }
 
-    //跳转到分类二
+    //跳转到订单页面
     @RequestMapping("/order.html")
-    public ModelAndView toCategoryTwo(Model model){
+    public ModelAndView toCategoryTwo(){
         ModelAndView modelAndView = new ModelAndView("main/iframe/order");
         /**
          * 临时用userid,用于前端查询该id下的订单信息, 之后由登录界面session直接传到前端
          */
-        model.addAttribute("userId",13);
+        modelAndView.addObject("userId",13);
         List<OrderStatus> orderStatus = orderService.getOrderStatus();
-        model.addAttribute("status",orderStatus);
+        modelAndView.addObject("status",orderStatus);
 
         return modelAndView;
     }
+
+    //跳转到管理员界面
+    @RequestMapping("/admin.html")
+    public ModelAndView toAdminPage(){
+        ModelAndView modelAndView = new ModelAndView("main/admin_index");
+        return modelAndView;
+    }
+
+    @RequestMapping("/addNewProduct.html")
+    public ModelAndView toAddNewProduct(){
+        ModelAndView modelAndView = new ModelAndView("main/iframe/addNewProduct.html");
+        return modelAndView;
+    }
+
+
 }

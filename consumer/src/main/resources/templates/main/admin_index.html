@@ -14,19 +14,155 @@
 
 
         <div class="layui-body">
-            admin_index.html
-        </div>
+            <fieldset class="layui-elem-field layui-field-title" style="margin-top: 20px;">
+                <legend>管理员界面</legend>
+            </fieldset>
+
+            <!--//条件表格-->
+        <form class="layui-form" id="form">
+            <div class="layui-form-item">
+                <label class="layui-form-label">商品名称</label>
+                <div class="layui-input-inline">
+                    <input type="text" name="productName" id="productName" lay-file class="layui-input">
+                </div>
+                    <div class="layui-input-inline">
+                    <select name="productStatus" id="productStatus" lay-filter="productStatus">
+                        <option value="10">-请选择-</option>
+                        <option value="0">上架</option>
+                        <option value="1">下架</option>
+                    </select>
+                    </div>
+                <div class="layui-input-inline">
+                    <button class="layui-btn" type="button" lay-filter="btn" id="btn">立即提交</button>
+                    <button type="reset" class="layui-btn layui-btn-primary">重置</button>
+                </div>
+            </div>
+
+        </form>
+
+        <fieldset class="layui-elem-field layui-field-title" style="margin-top: 20px;">
+            <legend></legend>
+        </fieldset>
+            <!--表格-->
+        <table class="layui-hide" id="mainTable" lay-filter="mainTable" th:name="mainTable"></table>
+        <script type="text/html" id="toolbarDemo">
+            <div class="layui-btn-container">
+                <button class="layui-btn layui-btn-sm" lay-event="getCheckData">获取选中行数据</button>
+                <button class="layui-btn layui-btn-sm" lay-event="add">添加</button>
+                <button class="layui-btn layui-btn-sm" lay-event="isAll">验证是否全选</button>
+            </div>
+        </script>
+        <script type="text/html" id="barDemo">
+            <a class="layui-btn layui-btn-xs" lay-event="edit">修改</a>
+            <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>
+        </script>
+
+    </div>
 
         <div th:replace="main/common::footer"></div>
     </div>
 
 
 </body>
-<script>
-    //JavaScript代码区域
-    layui.use('element', function(){
+<script th:inline="none">
+    layui.use(['table','element','form'], function(){
+        var table = layui.table;
         var element = layui.element;
-        var $ = layui.jquery;
+        var form = layui.form;
+        var $ = layui.$;
+
+
+        //表格数据填充
+        var maintable = table.render({
+            elem: '#mainTable'
+            ,url:'/productInfo.html/getInfo'
+            ,toolbar: '#toolbarDemo'
+            ,title: '商品表'
+            ,cols: [[
+                {type: 'checkbox', fixed: 'left'}
+                ,{field:'productId', title:'商品ID', width:150}
+                ,{field:'productName', title:'商品名称',width:150}
+                ,{field:'productPic', title:'图片地址', width:150}
+                ,{field:'productPrice', title:'单价', width:150}
+                ,{field:'procuctStock', title:'库存',width:150}
+                ,{field:'productStatus', title:'状态', width:150}
+                ,{fixed: 'right', title:'操作', toolbar: '#barDemo', width:150}
+            ]]
+            ,page: true
+        });
+
+        //btn按钮
+        $("#btn").click(function () {
+
+            console.log($("#productName").val());
+            console.log($("#productStatus").val());
+            //表格重载
+            table.reload('mainTable',{
+                where:{
+                    productName:$("#productName").val(),
+                    productStatus:$("#productStatus").val()
+                }
+            })
+        });
+
+        //头工具栏事件
+        table.on('toolbar(mainTable)', function(obj){
+            var checkStatus = table.checkStatus(obj.config.id);
+            switch(obj.event){
+                case 'getCheckData':
+                    var data = checkStatus.data;
+                    layer.alert(JSON.stringify(data));
+                    break;
+                case 'add':
+                    layer.open({
+                        type: 2
+                        , content: '/addNewProduct.html'
+                        , area: ['400px', '500px']
+                        , btnAlign: 'c' //按钮居中
+                        , shade: 0 //不显示遮罩
+                    })
+                    break;
+                case 'isAll':
+                    layer.msg(checkStatus.isAll ? '全选': '未全选');
+                    break;
+            };
+        });
+
+        //监听行工具事件
+        table.on('tool(mainTable)', function(obj) {
+            var data = obj.data;
+            if (obj.event === 'del') {
+                layer.confirm('真的删除行么', function (index) {
+                    $.ajax({
+                        url: "/productDel/" + data.productId,
+                        type: 'get',
+                        dataType: 'json',
+                        success: function (result) {
+                            if (result.code == 200) {
+                                alert("删除成功");
+                                maintable.reload();
+                            } else {
+                                alert(result.msg);
+                            }
+                        },
+                        error: function () {
+
+                            alert("ajax发送失败")
+                        }
+                    });
+                    layer.close(index);
+                });
+            }
+            if (obj.event === 'edit') {
+                layer.open({
+                    type: 2
+                    , content: '/update.html/'+data.productId
+                    , area: ['400px', '500px']
+                    , btnAlign: 'c' //按钮居中
+                    , shade: 0 //不显示遮罩
+                })
+            }
+        });
     });
 </script>
 </html>

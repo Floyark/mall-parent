@@ -2,7 +2,7 @@ dubbo:
   application:
     name: consumer
   registry:
+#    address: zookeeper://192.168.206.130:2181
     address: zookeeper://47.98.189.129:2181
-
 server:
   port: 8080
