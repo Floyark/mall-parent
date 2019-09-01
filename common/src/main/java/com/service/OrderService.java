@@ -6,7 +6,9 @@ import com.github.pagehelper.PageInfo;
 import com.pojo.OrderStatus;
 import com.vo.OrderVO;
 
+import java.math.BigDecimal;
 import java.util.List;
+import java.util.concurrent.ConcurrentHashMap;
 
 
 public interface OrderService {
@@ -14,4 +16,10 @@ public interface OrderService {
     PageInfo<OrderVO> getOrderInfo(SelectOrderDTO selectOrderDTO);
     //获取订单状态信息(填充下拉栏)
     List<OrderStatus> getOrderStatus();
+
+    ConcurrentHashMap<Integer,Integer> parseItem(String context);
+
+    BigDecimal getOrderPayMent(ConcurrentHashMap<Integer, Integer> map);
+
+    String createNewOrder(int userId, BigDecimal payment, ConcurrentHashMap<Integer, Integer> map);
 }

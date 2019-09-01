@@ -84,7 +84,7 @@
                 ,{field:'productName', title:'商品名称',width:150}
                 ,{field:'productPic', title:'图片地址', width:150}
                 ,{field:'productPrice', title:'单价', width:150}
-                ,{field:'procuctStock', title:'库存',width:150}
+                ,{field:'productStock', title:'库存',width:150}
                 ,{field:'productStatus', title:'状态', width:150}
                 ,{fixed: 'right', title:'操作', toolbar: '#barDemo', width:150}
             ]]
@@ -93,9 +93,6 @@
 
         //btn按钮
         $("#btn").click(function () {
-
-            console.log($("#productName").val());
-            console.log($("#productStatus").val());
             //表格重载
             table.reload('mainTable',{
                 where:{
@@ -120,6 +117,9 @@
                         , area: ['400px', '500px']
                         , btnAlign: 'c' //按钮居中
                         , shade: 0 //不显示遮罩
+                        , end: function(){
+                            table.reload('mainTable');
+                        }
                     })
                     break;
                 case 'isAll':
@@ -160,6 +160,9 @@
                     , area: ['400px', '500px']
                     , btnAlign: 'c' //按钮居中
                     , shade: 0 //不显示遮罩
+                    ,end: function(){
+                        table.reload('mainTable');
+                    }
                 })
             }
         });

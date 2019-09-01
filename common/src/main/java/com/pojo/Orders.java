@@ -14,11 +14,7 @@ public class Orders  implements Serializable {
 
 	private Integer userId;
 
-	private String productId;
-
 	private java.math.BigDecimal payment;
-
-	private Integer quantity;
 
 	private Integer status;
 

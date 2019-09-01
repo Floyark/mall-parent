@@ -3,38 +3,26 @@ package com.controller;
 import com.alibaba.dubbo.config.annotation.Reference;
 import com.pojo.OrderStatus;
 import com.service.OrderService;
+import com.service.ProductService;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
-import javax.jws.WebParam;
-import javax.servlet.http.HttpSession;
-import javax.validation.constraints.Max;
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 @Controller
 public class AdminPageController {
 
-
+    @Reference
+    ProductService productService;
     @Reference
     OrderService orderService;
 
-    @RequestMapping("/mainPage")
-    public ModelAndView toMain(){
-
-        return new ModelAndView("main/admin_index");
-    }
 
     //跳转到分类一
-    @RequestMapping("/category_one.html")
+    @RequestMapping("/main.html")
     public ModelAndView toCategoryOne(){
-
-        return new ModelAndView("main/iframe/cate_one");
+        return new ModelAndView("main/iframe/main");
     }
 
     //跳转到订单页面

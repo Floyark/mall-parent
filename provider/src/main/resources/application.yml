@@ -5,7 +5,9 @@ spring:
     password: 123456
     url: jdbc:mysql://47.98.189.129:3306/mall?useUnicode=true&characterEncoding=utf8&serverTimezone=UTC
     driver-class-name: com.mysql.cj.jdbc.Driver
-
+  redis:
+    host: 47.98.189.129
+    port: 6379
 logging:
   level:
     com.mapper: DEBUG
@@ -24,3 +26,6 @@ dubbo:
 
 server:
   port: 9090
+
+path:
+  pic: C:\imgs\
