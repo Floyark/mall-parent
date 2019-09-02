@@ -10,6 +10,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
 
+import javax.jws.WebParam;
 import javax.servlet.http.HttpSession;
 import java.util.List;
 
@@ -42,9 +43,11 @@ public class AdminPageController {
     //跳转到管理员界面
     @RequestMapping("/admin.html")
     public ModelAndView toAdminPage(HttpSession session){
+
         session.setAttribute("userId",19);
-        session.setMaxInactiveInterval(3600);
+        String sessionId = session.getId();
         ModelAndView modelAndView = new ModelAndView("main/admin_index");
+        modelAndView.addObject("",sessionId);
         return modelAndView;
     }
 

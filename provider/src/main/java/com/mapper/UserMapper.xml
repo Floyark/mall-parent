@@ -30,4 +30,24 @@
         where user_phone = #{Email}
     </select>
 
+    <update id="updateUserById" parameterType="com.pojo.User" >
+        update user
+        <set>
+            <if test="userName!=null and userName!=''">
+                user_name=#{userName},
+            </if>
+            <if test="userPhone!=null and userPhone!=''">
+                user_phone=#{userPhone},
+            </if>
+            <if test="userAddress!=null and userAddress!=''">
+                user_address=#{userAddress},
+            </if>
+            <if test="userEmail!=null and userEmail!=''">
+                user_email=#{userEmail}
+            </if>
+        </set>
+        where
+        user_id=#{userId}
+    </update>
+
 </mapper>

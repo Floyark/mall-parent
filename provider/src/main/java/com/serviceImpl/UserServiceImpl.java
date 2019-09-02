@@ -6,6 +6,7 @@ import com.mapper.UserMapper;
 import com.pojo.User;
 import com.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class UserServiceImpl implements UserService {
@@ -22,4 +23,10 @@ public class UserServiceImpl implements UserService {
         User user = userMapper.getUserByEmail(pattern);
         return user;
     }
+
+    @Transactional
+    public int updateUserById(User user) {
+        return userMapper.updateUserById(user);
+    }
+
 }
