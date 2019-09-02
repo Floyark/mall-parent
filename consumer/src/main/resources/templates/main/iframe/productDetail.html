@@ -1,0 +1,72 @@
+<!DOCTYPE html >
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+
+    <script src="http://code.jquery.com/jquery-latest.js"></script>
+</head>
+<body>
+    <form>
+        <input hidden name="productId" id="productId" th:value="${product.productId}" >
+        <table align="center">
+            <tr>
+                <td colspan="3"><img src="http://47.98.189.129/static/apple.jpg" style="width: 120px;height: 200px"></td>
+            </tr>
+            <tr>
+                <td>商品名称</td>
+                <td> : </td>
+                <td>[[${product.productName}]]</td>
+            </tr>
+            <tr>
+                <td>商品单价</td>
+                <td> : </td>
+                <td>[[${product.productPrice}]]</td>
+            </tr>
+            <tr>
+                <td>商品库存</td>
+                <td> : </td>
+                <td>[[${product.productStock}]]</td>
+            </tr>
+            <tr>
+                <td>购买数量</td>
+                <td> ：</td>
+                <td><input width="10" id="pruchaseNumber"></td>
+            </tr>
+            <tr>
+                <td colspan="3"><button type="button" onclick="purchase()" th:width="15">加入购物车</button></td>
+            </tr>
+        </table>
+    </form>
+
+</body>
+<script>
+    function purchase() {
+        var total = [[${product.productStock}]];
+        var num = $("#pruchaseNumber").val();
+
+       if(num>total){
+           return;
+       }
+
+        $.ajax({
+            url:'/cart/put',
+            data:{
+                "productId":$("#productId").val(),
+                "productQuantity":$("#pruchaseNumber").val()
+            },
+            dataType:"json",
+            type:"post",
+            success:function (result) {
+                if(result.code == 200){
+                    alert("成功")
+                }else{
+                    alert("失败")
+                }
+            },
+            error:function () {
+                alert("爆炸")
+            }
+        })
+    }
+</script>
+
+</html>

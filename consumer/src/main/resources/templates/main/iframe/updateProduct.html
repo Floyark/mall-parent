@@ -1,0 +1,71 @@
+<!DOCTYPE html >
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    　　<script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
+</head>
+<body>
+<form id="form">
+    <input hidden name="productId" id="productId" th:value="${product.productId}">
+    <table align="center">
+        <tr >
+            <td colspan="3"><img id="productPic" th:src="${product.getProductPic()}" style="width: 120px;height: 200px"></td>
+        </tr>
+        <tr>
+        <td>商品名称</td>
+        <td> : </td>
+            <td><input id="productName" name="productName" th:value="${product.getProductName()}"></td>
+    </tr>
+        <tr>
+            <td>商品单价</td>
+            <td> : </td>
+            <td><input id="productPrice" name="productPrice" th:value="${product.getProductPrice()}"></td>
+        </tr>
+        <tr>
+            <td>商品库存</td>
+            <td> : </td>
+            <td><input id="productStock" name="productStock" th:value="${product.productStock}"></td>
+        </tr>
+        <tr>
+            <td>商品状态</td>
+            <td> ：</td>
+            <td>上架<input name="productStatus"  type="radio" value='0'>下架<input type="radio" name="productStatus" value='1'></td>
+        </tr>
+        <tr>
+            <td colspan="3"><button type="button" onclick="btnSubmit()" th:width="15">提交修改</button></td>
+        </tr>
+    </table>
+</form>
+
+</body>
+<script>
+    //判断上下架状态
+    $(function() {
+        var selectedValue = [[${product.productStatus}]];
+        alert("初始"+selectedValue);
+        $("input[name='productStatus'][value=selectedValue]").attr("checked",true);
+    })
+
+    //表单提交
+    function btnSubmit() {
+        formData = $("#form").serialize();
+    $.ajax({
+        url:"/updateProductInfo.html",
+        data:formData,
+        type:"post",
+        dataType:"JSON",
+        success:function (result) {
+            if(result.code==200) {
+                alert("修改成功");
+            }else{
+                alert("修改失败");
+            }
+        },
+        error:function () {
+            alert("ajax发送失败")
+        }
+    });
+
+}
+</script>
+
+</html>

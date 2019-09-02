@@ -1,6 +1,7 @@
 package com.serviceImpl;
 
 import com.alibaba.dubbo.config.annotation.Service;
+import com.dto.InsertOrderItemDTO;
 import com.dto.SelectOrderDTO;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
@@ -74,22 +75,22 @@ public class OrderServiceImpl implements OrderService {
         if (newOrderResult!=1){
             throw new RuntimeException("新订单插入错误");
         }
-        //2.新增订单条目数,将键值对重新封装
-        List<Integer> itemList = new ArrayList<Integer>();
+        //2.新增订单条目数
+        List<InsertOrderItemDTO> itemDTOList = new ArrayList<InsertOrderItemDTO>();
         Enumeration<Integer> keys = map.keys();
         while (keys.hasMoreElements()){
-            itemList.add(keys.nextElement());
+            Integer productId = keys.nextElement();
+        //3.封装对象
+            itemDTOList.add(new InsertOrderItemDTO(orderId,productId,map.get(productId)));
         }
-
-
-
-        int result = orderMapper.insertNewOrderItem(orderId,itemList);
+        //4.订单详细信息插入
+        int result = orderMapper.insertNewOrderItem(itemDTOList);
         if(result!=map.size()){
-            throw new RuntimeException("订单项目没有插入到order_product表中");
+            throw new RuntimeException("订单项目没有插入到item表中");
         }
 
-
-        return null;
+        String qrPath ="qrPath";
+        return qrPath;
     }
 
 

@@ -1,5 +1,6 @@
 package com.mapper;
 
+import com.dto.InsertOrderItemDTO;
 import com.dto.SelectOrderDTO;
 import com.pojo.OrderStatus;
 import com.vo.OrderVO;
@@ -8,6 +9,7 @@ import org.apache.ibatis.annotations.Param;
 
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 @Mapper
@@ -21,5 +23,5 @@ public interface OrderMapper {
 
     int insertNewOrder(@Param(value = "orderId") String orderId, @Param(value = "userId")int userId,@Param(value = "payment") BigDecimal payment);
 
-    int insertNewOrderItem(@Param(value = "orderId")String orderId, @Param(value = "list")List<Integer> list);
+    int insertNewOrderItem(List<InsertOrderItemDTO> list);
 }

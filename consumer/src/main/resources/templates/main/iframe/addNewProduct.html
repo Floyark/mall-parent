@@ -1,0 +1,106 @@
+<!DOCTYPE html >
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <title>layout 后台大布局 - Layui</title>
+    <link rel="stylesheet" th:href="@{/layui/css/layui.css}">
+    <script th:src="@{/layui/layui.js}"></script>
+</head>
+<body class="layui-layout-body">
+<div class="layui-layout layui-layout-admin">
+<form id="formData">
+    <table>
+        <tr>
+            <td>商品名称</td><td><input th:name="productName"></td>
+            <td></td>
+        </tr>
+        <tr>
+            <td>商品库存</td><td><input th:name="productStock"></td>
+            <td></td>
+        </tr>
+        <tr>
+            <td>商品单价</td><td><input th:name="productPrice"></td>
+            <td></td>
+        </tr>
+        <tr>
+            <td>
+            </td>
+            <td>
+                <div class="layui-inline">
+                    <label class="layui-form-label">图片上传:</label>
+                    <div class="layui-input-inline">
+                        <button type="button" class="layui-btn" id="picFile">
+                            <i class="layui-icon">&#xe67c;</i>上传图片
+                        </button>
+                        <input type="hidden" name="productPic" id="picPath" lay-verify="picFile" />
+                    </div>
+                </div>
+                <div class="layui-inline">
+                    <label class="layui-form-label"></label>
+                    <div class="layui-input-inline">
+                        <img id="picCallBack" style="width: 100px;height: 100px;display: none;" />
+                    </div>
+                </div>
+            </td>
+            <td><button type="button" onclick="tijiao()">提交</button></td>
+        </tr>
+    </table>
+</form>
+</div>
+</body>
+<script>
+    function tijiao() {
+        var data = $("#formData").serialize();
+        $.ajax({
+            url:'/addProduct',
+            data:data,
+            type:'post',
+            dataType:'json',
+            success:function (result) {
+                //todo 新商品提交
+            },
+            error:function () {
+                alert("爆炸");
+            }
+        });
+    }
+</script>
+<script>
+    //JavaScript代码区域
+    layui.use(['element','form','upload'], function(){
+        var element = layui.element;
+        var upload = layui.upload;
+         $ = layui.$;
+
+
+        //执行实例
+        var uploadInst = upload.render({
+            elem: '#picFile' //绑定元素
+            ,url: '/upload/pic' //上传接口
+            ,done: function(res){
+                //上传完毕回调
+                if(res.code == 0){
+                    // 上传图片成功
+                    //1. 给用户回显图片.
+                    $("#picCallBack").attr("src",res.data);
+                    $("#picCallBack").css("display","block");
+                    //2. 将图片的访问路径设置到隐藏域中.
+                    $("#picPath").val(res.data);
+                }else{
+                    layer.alert(res.msg);
+                    $("#picCallBack").attr("src","");
+                    $("#picPath").val("");
+                    $("#picCallBack").css("display","none");
+                }
+            }
+            ,error: function(){
+                //请求异常回调
+                $("#picCallBack").attr("src","");
+                $("#picPath").val("");
+                $("#picCallBack").css("display","none");
+            }
+        });
+    });
+</script>
+</html>

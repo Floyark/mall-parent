@@ -39,13 +39,12 @@
         values (#{orderId},#{userId},#{payment},0,now())
     </insert>
 
-    <!--将用户购买的商品记录到order-product表中-->
-    <insert id="insertNewOrderItem">
-        <!--insert into order_product(order_id,product_id)-->
-        <!--values -->
-        <!--<foreach collection="list" item="item" open="(#{orderId}," separator="," close=")" index="index">-->
-            <!--#{list}-->
-        <!--</foreach>-->
-
+    <!--将用户购买的商品记录到order-item表中-->
+    <insert id="insertNewOrderItem" parameterType="List">
+        insert into order_item(order_id,product_id,product_quantity)
+        values
+        <foreach collection="list" item="item" separator=","  index="index">
+            (#{item.orderId},#{item.productId},#{item.productQuantity})
+        </foreach>
     </insert>
 </mapper>

@@ -4,10 +4,13 @@ import com.alibaba.dubbo.config.annotation.Reference;
 import com.pojo.OrderStatus;
 import com.service.OrderService;
 import com.service.ProductService;
+import org.springframework.http.HttpRequest;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
 
+import javax.servlet.http.HttpSession;
 import java.util.List;
 
 @Controller
@@ -27,12 +30,9 @@ public class AdminPageController {
 
     //跳转到订单页面
     @RequestMapping("/order.html")
-    public ModelAndView toCategoryTwo(){
+    public ModelAndView toCategoryTwo(HttpSession session){
         ModelAndView modelAndView = new ModelAndView("main/iframe/order");
-        /**
-         * 临时用userid,用于前端查询该id下的订单信息, 之后由登录界面session直接传到前端
-         */
-        modelAndView.addObject("userId",13);
+        int userId = (Integer) session.getAttribute("userId");
         List<OrderStatus> orderStatus = orderService.getOrderStatus();
         modelAndView.addObject("status",orderStatus);
 
@@ -41,7 +41,9 @@ public class AdminPageController {
 
     //跳转到管理员界面
     @RequestMapping("/admin.html")
-    public ModelAndView toAdminPage(){
+    public ModelAndView toAdminPage(HttpSession session){
+        session.setAttribute("userId",19);
+        session.setMaxInactiveInterval(3600);
         ModelAndView modelAndView = new ModelAndView("main/admin_index");
         return modelAndView;
     }

@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd](http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.mapper.ProductMapper">
+
+
+    <!--根据查询条件获取商品信息-->
+    <select id="getProductInfo" parameterType="com.dto.MainTableDTO" resultType="com.pojo.Product">
+        select
+        product_id productId,
+        product_name productName,
+        product_stock productStock,
+        product_price productPrice,
+        product_status productStatus,
+        product_pic productPic
+        from product
+        <where>
+            <if test="productName !=null and productName!=''">
+                and product_name like '%${productName}%'
+            </if>
+            <if test="productStatus !=null and productStatus!=10" >
+                and product_status = #{productStatus}
+            </if>
+        </where>
+    </select>
+
+    <!--根据id获取商品信息-->
+    <select id="getProductInfoById" parameterType="Integer" resultType="com.pojo.Product">
+        select
+        product_id productId,
+        product_name productName,
+        product_stock productStock,
+        product_price productPrice,
+        product_status productStatus,
+        product_pic productPic
+        from  product
+        where product_id=#{id}
+    </select>
+
+    <!--根据id删除商品-->
+    <delete id="deleteProductById" parameterType="Integer">
+        delete from product
+        where product_id = #{id}
+    </delete>
+
+    <!--修改商品信息-->
+    <update id="updateProductInfo" parameterType="com.pojo.Product">
+        update  product
+        <trim prefix="set" suffixOverrides=",">
+            <if test="productName!=null and productName !=''">
+                product_name = #{productName},
+            </if>
+            <if test="productPrice!=null and productPrice!=''">
+                product_price = #{productPrice},
+            </if>
+            <if test="productStock!=null and productStock!=''">
+                 product_stock = #{productStock},
+            </if>
+            <if test="productStatus!=null and productStatus!=''">
+                 product_status = #{productStatus}
+            </if>
+        </trim>
+        where
+        product_id = #{productId}
+    </update>
+
+    <!--新增商品信息-->
+    <insert id="insertInfo" parameterType="com.pojo.Product">
+        insert into product
+        (product_name,product_stock,product_price,product_pic,product_status)
+        values
+        (#{productName},#{productStock},#{productPrice},#{productPic},1)
+    </insert>
+
+    <!--用于商品界面展示-->
+    <select id="getProductForMain"  resultType="com.vo.ProductInfoVO" parameterType="String">
+        select
+        product_id productId,
+        product_price productPrice,
+        product_pic productPic,
+        product_name productName
+        from product
+        <where>
+            <if test="productName!=null and productName != ''">
+                product_name like  '%${productName}%'
+            </if>
+        </where>
+    </select>
+
+    <!--根据id，封装CartVO-->
+    <select id="getCartVoById" parameterType="Integer" resultType="com.vo.CartVO">
+        select
+        product_id productId,
+        product_name productName,
+        product_stock productStock,
+        product_price productPrice
+        from product
+        where product_id = #{productId}
+    </select>
+
+
+    <select id="getProductPriceById" parameterType="Integer" resultType="java.math.BigDecimal">
+        select product_price
+        from product
+        where product_id = #{id}
+    </select>
+</mapper>
