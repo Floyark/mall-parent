@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.mapper.EveryDayMapper">
+
+    <!--//统计每天的注册用户数量-->
+    <!--List<User> findRegisterByDate(@Param("userCreate") Date date);-->
+    <select id="findRegisterByDate" resultType="com.pojo.User">
+        select
+            user_id userId,
+            user_name userName,
+            user_phone userPhone,
+            user_address userAddress,
+            user_code userCode,
+            user_create userCreate,
+            user_status userStatus,
+            user_email userEmail
+        from user u
+        <where>
+          <if test="userCreate != null and userCreate != ''">
+              date_format(user_create,'%Y-%m-%d')=#{userCreate}
+          </if>
+        </where>
+    </select>
+
+    <!--//统计每天的营业额-->
+    <!--BigDecimal findTurnoverByDate(@Param("purchaseDate") Date purchaseDate);-->
+    <select id="findTurnoverByDate" resultType="BigDecimal">
+      select sum(payment) sumMoney
+        from orders
+      <where>
+          <if test="purchaseDate != null and purchaseDate != ''">
+              date_format(pruchase_date,'%Y-%m-%d')=#{purchaseDate}
+          </if>
+      </where>
+    </select>
+
+
+</mapper>
