@@ -2,6 +2,7 @@ package com.serviceImpl;
 
 import com.alibaba.dubbo.config.annotation.Service;
 import com.dto.MainTableDTO;
+import com.dto.QuantityDTO;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.mapper.ProductMapper;
@@ -82,6 +83,35 @@ public class ProductServiceImpl implements ProductService {
             list.add(cartVO);
         }
         return list;
+    }
+
+    //根据map传递参数，修改库存
+    @Transactional
+    public int updateProductQuantityById(String orderId) {
+        //1.获取order中所有的商品的购买数量
+        List<QuantityDTO> orderItemList = productMapper.getOrderItems(orderId);
+        //2.获取product和order对应产品的库存
+        List<QuantityDTO> productItemList = productMapper.getProductStockByOrderId(orderId);
+        //3.双重for循环更新库存
+        List<QuantityDTO> newStock= new ArrayList<QuantityDTO>();
+        for (QuantityDTO quantityDTO : orderItemList) {
+            for (QuantityDTO dto : productItemList) {
+                //判断商品id是否相等
+                if(quantityDTO.getProductId()==dto.getProductId()){
+                    int temp = dto.getQuantity() - quantityDTO.getQuantity();
+                    if(temp<0){
+                        throw new RuntimeException("超出库存");
+                    }
+                    newStock.add(new QuantityDTO(quantityDTO.getProductId(),temp));
+                }
+            }
+        }
+        //4.刷新到数据库
+        int result = productMapper.updateProductStock(newStock);
+        if(result!=orderItemList.size()){
+            throw new RuntimeException("修改仓库条目失败");
+        }
+        return 1;
     }
 
 

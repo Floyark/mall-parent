@@ -14,8 +14,11 @@ import com.service.ProductService;
 import com.vo.OrderVO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.jaxb.SpringDataJaxb;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
 import java.math.BigDecimal;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
@@ -26,13 +29,20 @@ public class OrderServiceImpl implements OrderService {
     @Autowired
     OrderMapper orderMapper;
 
+    @Resource
+    RedisTemplate<String,Integer>redisTemplate;
+
     @Autowired
     ProductMapper productMapper;
 
+    //****根据userId获取历史订单信息
     public PageInfo<OrderVO> getOrderInfo(SelectOrderDTO selectOrderDTO) {
+
+        selectOrderDTO.setUserId(127);
+
+
         PageHelper.startPage(selectOrderDTO.getPage(),selectOrderDTO.getLimit());
         List<OrderVO> orders= orderMapper.getOrderInfo(selectOrderDTO);
-
         return new PageInfo<OrderVO>(orders);
     }
 

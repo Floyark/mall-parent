@@ -1,29 +1,43 @@
 
 spring:
+#  邮箱的授权（发邮件要用）
+  mail:
+    host: smtp.163.com
+    username: dongcidaci_master@163.com
+    password: zengtong123456
+
+#  连接数据库
   datasource:
     username: root
     password: 123456
     url: jdbc:mysql://47.98.189.129:3306/mall?useUnicode=true&characterEncoding=utf8&serverTimezone=UTC
     driver-class-name: com.mysql.cj.jdbc.Driver
+
+#   连接redis
   redis:
     host: 47.98.189.129
     port: 6379
+
+#   显示sql语句
 logging:
   level:
     com.mapper: DEBUG
-#
+
+#   使用dubbo、zookeeper
 dubbo:
   application:
     name: provider
   registry:
-#    address: zookeeper://192.168.206.130:2181
       address: zookeeper://47.98.189.129:2181
   protocol:
     name: dubbo
     port: 20880
   scan:
     base-packages: com.serviceImpl
+  provider:
+    timeout: 5000
 
+#   改端口
 server:
   port: 9090
 

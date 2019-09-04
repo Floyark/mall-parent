@@ -105,4 +105,35 @@
         from product
         where product_id = #{id}
     </select>
+
+
+    <select id="getOrderItems" parameterType="String" resultType="com.dto.QuantityDTO">
+        select
+        product_id productId,
+        product_quantity quantity
+        from order_item
+        where order_id = #{orderId}
+    </select>
+
+    <!--批量更新库存-->
+    <update id="updateProductStock" parameterType="List">
+        update product
+        SET product_stock =
+        CASE product_id
+        <foreach collection="list" item="item">
+        WHEN ${item.productId} THEN ${item.quantity}
+            <!--WHEN #{item.productId} THEN #{item.quantity}-->
+        </foreach>
+        END
+        where product_id in (1,2,3,4,5)
+    </update>
+
+    <!--获取订单中对应的商品库存-->
+    <select id="getProductStockByOrderId" parameterType="Map" resultType="com.dto.QuantityDTO">
+        select
+        i.product_id productId,
+        p.product_stock quantity
+        from order_item i,product p
+        where i.order_id = #{orderId} and i.product_id = p.product_id
+    </select>
 </mapper>

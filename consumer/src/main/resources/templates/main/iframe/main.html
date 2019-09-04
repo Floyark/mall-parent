@@ -72,7 +72,6 @@
     $(function () {
         search(1)
     })
-
     //点击搜索功能+分页功能
     function search(page) {
         var productName = $("#productName").val();
@@ -121,7 +120,6 @@
                         nav = " <button onclick='search(1)'>首页</button>&nbsp;&nbsp;&nbsp;\n" +
                             " <button onclick='search("+(--pre)+")'>上一页</button>&nbsp;&nbsp;&nbsp;"
                     }
-
                     nav = nav + "<a>"+num+"</a>&nbsp;&nbsp;&nbsp;"
                     if(!data.isLastPage){
                         var next = num;
@@ -129,7 +127,6 @@
                             "<button onclick='search("+pages+")'>末尾页</button>"
 
                     }
-
                    $("#page").html(nav);
                 }else{
                     alert("发送失败")

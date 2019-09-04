@@ -71,6 +71,9 @@
         var form = layui.form;
         var $ = layui.$;
 
+        $(function () {
+            table.reload('mainTable');
+        })
 
         //表格数据填充
         var maintable = table.render({

@@ -18,7 +18,9 @@ public class CartServiceImpl implements CartService {
 //     Integer userId;   //主key
 //     Integer productId;   //小key
 //     Integer productQuantity;  //value
+
     public int putProductInRedis(CartDTO cartDTO) {
+
         if(cartDTO.getProductQuantity()==0){
             return 0;
         }

@@ -27,12 +27,7 @@
             <artifactId>spring-boot-starter-thymeleaf</artifactId>
             <version>${spring-boot-starter-thymeleaf}</version>
         </dependency>
-        <!-- https://mvnrepository.com/artifact/org.apache.commons/commons-lang3 -->
-        <dependency>
-            <groupId>org.apache.commons</groupId>
-            <artifactId>commons-lang3</artifactId>
-            <version>${commons-lang3}</version>
-        </dependency>
+
 
     </dependencies>
 

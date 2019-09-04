@@ -58,7 +58,9 @@
             type:'post',
             dataType:'json',
             success:function (result) {
-                //todo 新商品提交
+                if(result.code==200) {
+                    alert("添加成功")
+                }
             },
             error:function () {
                 alert("爆炸");

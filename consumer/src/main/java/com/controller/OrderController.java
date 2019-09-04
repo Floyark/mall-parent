@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import java.math.BigDecimal;
 import java.util.Date;
@@ -27,22 +28,16 @@ public class OrderController {
     @Reference
     CartService cartService;
 
-    //将order显示到订单查询中
+    //****将order显示到订单查询中
     @RequestMapping("/getOrderInfo")
     public @ResponseBody TableResponse getOrderInfoBySelected(SelectOrderDTO selectOrderDTO,HttpSession session){
-//        PageInfo<OrderVO> orderInfo = orderService.getOrderInfo(selectOrderDTO);
-//        return new TableResponse((int)orderInfo.getTotal(),orderInfo.getList());
-        int userId = (Integer) session.getAttribute("userId");
-        OrderVO orderVO = new OrderVO();
-        orderVO.setOrderId("dqwdqw");
-        orderVO.setUserName("12321312");
-        orderVO.setPayment(new BigDecimal(123));
-        orderVO.setStatus(1);
-        orderVO.setPruchaseDate(new Date());
-        return new TableResponse(10,orderVO);
+        Integer userId = (Integer) session.getAttribute("userId");
+        selectOrderDTO.setUserId(userId);
+        PageInfo<OrderVO> orderInfo = orderService.getOrderInfo(selectOrderDTO);
+        return new TableResponse((int)orderInfo.getTotal(),orderInfo.getList());
     }
 
-    //购物车商品提交
+    //****购物车商品提交
     @RequestMapping("/order/insert")
     public @ResponseBody
     ServerResponse updateCart(@RequestParam(value = "context") String context, HttpSession session){

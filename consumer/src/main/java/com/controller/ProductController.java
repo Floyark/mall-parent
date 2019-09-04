@@ -29,6 +29,7 @@ public class ProductController {
     @Reference
     ProductService productService;
 
+    //****查询产品详细信息
     @RequestMapping("/productInfo.html/{id}")
     public ModelAndView getProductInfoById(@PathVariable Integer id){
         ModelAndView modelAndView=new ModelAndView("main/iframe/productDetail.html");
@@ -39,7 +40,7 @@ public class ProductController {
     }
 
 
-    //根据查询条件 到数据库查询数据
+    //****根据查询条件 到数据库查询数据
     @RequestMapping("/productInfo.html/getInfo")
     public @ResponseBody TableResponse getAllProductInfo(MainTableDTO mainTableDTO, @PathParam("page") Integer page, @PathParam("limit") Integer limit){
 
@@ -49,7 +50,7 @@ public class ProductController {
         return new TableResponse(productPageInfo.getTotal(),productPageInfo.getList());
     }
 
-    //跳转到修改单个商品的界面
+    //****跳转到修改单个商品的界面
     @RequestMapping("/update.html/{id}")
     public String toUpdate(@PathVariable(value = "id") Integer id, Model model){
         //Service层中根据id获取商品数据
@@ -59,7 +60,7 @@ public class ProductController {
     }
 
 
-    //根据id删除商品信息
+    //****根据id删除商品信息
     @GetMapping("/productDel/{id}")
     public @ResponseBody ServerResponse toDelete(@PathVariable Integer id){
        int result = productService.deleteProductById(id);
@@ -69,14 +70,14 @@ public class ProductController {
        return ResponseUtil.error("删除失败");
     }
 
-    //修改商品信息
+    //****修改商品信息
     @RequestMapping("/updateProductInfo.html")
     public @ResponseBody ServerResponse doUpdateInfo(Product product){
         int result = productService.updateProductInfo(product);
         return ResponseUtil.success();
     }
 
-    //新增商品信息
+    //****新增商品信息
     @RequestMapping("/addProduct")
     public @ResponseBody ServerResponse addNewProduct(Product product){
         productService.InsertProductInfo(product);
@@ -84,7 +85,7 @@ public class ProductController {
         return ResponseUtil.success();
     }
 
-    //商品信息总览
+    //****商品信息总览
     @RequestMapping("/productInfo.html/info")
     public @ResponseBody ServerResponse getProductInfo(@PathParam(value = "productName")String productName,@PathParam(value = "page")Integer page){
 

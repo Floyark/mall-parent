@@ -17,4 +17,7 @@ public class ServerResponse<T> {
         this.msg = msg;
         this.data = data;
     }
+    public ServerResponse(){
+
+    }
 }

@@ -4,15 +4,16 @@ import com.alibaba.dubbo.config.annotation.Reference;
 import com.pojo.OrderStatus;
 import com.service.OrderService;
 import com.service.ProductService;
-import org.springframework.http.HttpRequest;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
 
-import javax.jws.WebParam;
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import java.util.List;
+import java.util.UUID;
 
 @Controller
 public class AdminPageController {
@@ -22,32 +23,26 @@ public class AdminPageController {
     @Reference
     OrderService orderService;
 
-
-    //跳转到分类一
     @RequestMapping("/main.html")
-    public ModelAndView toCategoryOne(){
-        return new ModelAndView("main/iframe/main");
-    }
-
-    //跳转到订单页面
-    @RequestMapping("/order.html")
-    public ModelAndView toCategoryTwo(HttpSession session){
-        ModelAndView modelAndView = new ModelAndView("main/iframe/order");
-        int userId = (Integer) session.getAttribute("userId");
-        List<OrderStatus> orderStatus = orderService.getOrderStatus();
-        modelAndView.addObject("status",orderStatus);
-
+    public ModelAndView toMain(HttpSession session){
+        session.setAttribute("userId",127);
+        ModelAndView modelAndView =new ModelAndView("main/iframe/main");
         return modelAndView;
     }
 
-    //跳转到管理员界面
-    @RequestMapping("/admin.html")
-    public ModelAndView toAdminPage(HttpSession session){
 
-        session.setAttribute("userId",19);
-        String sessionId = session.getId();
+    @RequestMapping("/order.html")
+    public ModelAndView toOrder(){
+        ModelAndView modelAndView = new ModelAndView("main/iframe/order");
+        List<OrderStatus> orderStatus = orderService.getOrderStatus();
+        modelAndView.addObject("status",orderStatus);
+        return modelAndView;
+    }
+
+    @RequestMapping("/admin.html")
+    public ModelAndView toAdminPage(){
+
         ModelAndView modelAndView = new ModelAndView("main/admin_index");
-        modelAndView.addObject("",sessionId);
         return modelAndView;
     }
 

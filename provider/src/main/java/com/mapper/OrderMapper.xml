@@ -28,6 +28,7 @@
             </if>
         </where>
     </select>
+
     <select id="getOrderStatus" resultType="com.pojo.OrderStatus">
         select order_status_id orderStatusId,order_status_name orderStatusName
         from order_status

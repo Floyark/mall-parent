@@ -3,6 +3,7 @@ dubbo:
     name: consumer
   registry:
     address: zookeeper://47.98.189.129:2181
+    timeout: 5000
 server:
   port: 8080
 

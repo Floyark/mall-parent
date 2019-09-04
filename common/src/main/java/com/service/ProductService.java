@@ -9,6 +9,7 @@ import com.vo.ProductInfoVO;
 
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public interface ProductService {
 
@@ -32,5 +33,8 @@ public interface ProductService {
 
     //显示购物车信息
     List<CartVO> getCartProductInfo(HashMap<Integer, Integer> cartItem);
+
+    //根据productId，productQuantity减库存
+    int updateProductQuantityById(String orderId);
 
 }

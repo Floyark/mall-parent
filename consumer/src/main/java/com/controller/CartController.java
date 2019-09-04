@@ -1,6 +1,7 @@
 package com.controller;
 import com.alibaba.dubbo.config.annotation.Reference;
 import com.dto.CartDTO;
+import com.exception.MyException;
 import com.pojo.Product;
 import com.response.ServerResponse;
 import com.service.CartService;
@@ -14,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import javax.swing.event.InternalFrameEvent;
 import java.util.HashMap;
@@ -31,9 +33,8 @@ public class CartController {
     ProductService productService;
 
     @RequestMapping("/cart.html")
-    public ModelAndView getProductInfo(HttpSession session){
-        //之后通过session获取
-        Integer userId = (Integer) session.getAttribute("userId");
+    public ModelAndView getProductInfo(HttpSession httpSession){
+        Integer userId = (Integer) httpSession.getAttribute("userId");
         //获取购物车商品 id 和 购买数量
         HashMap<Integer,Integer> cartItem = cartService.getCartItem(userId);
         if(cartItem==null){
@@ -46,11 +47,11 @@ public class CartController {
         return modelAndView;
     }
 
-
     //商品详情页面 加入购物车
     @RequestMapping("/cart/put")
-    public @ResponseBody ServerResponse putInCart(CartDTO cartDTO,HttpSession session){
-        int userId = (Integer) session.getAttribute("userId");
+    public @ResponseBody ServerResponse putInCart(CartDTO cartDTO, HttpSession session){
+
+        Integer userId = (Integer) session.getAttribute("userId");
         cartDTO.setUserId(userId);
         int result = cartService.putProductInRedis(cartDTO);
         if(result!=1){
