@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-    <title>后台查询每天数据</title>
+    <title>layout 后台大布局 - Layui</title>
     <link rel="stylesheet" th:href="@{/layui/css/layui.css}">
     <script th:src="@{/layui/layui.js}"></script>
     <script th:src="@{https://cdn.bootcss.com/jquery/1.12.4/jquery.min.js}"></script>
@@ -13,80 +13,250 @@
     <div th:replace="main/common::header"></div>
     <div th:replace="main/common::left"></div>
 
+
+    <!--主体区域-->
     <div class="layui-body">
+        <!--        app的查询条件表单-->
+        <fieldset class="layui-elem-field layui-field-title" style="margin-top: 20px;">
+            <legend>app的查询条件</legend>
+        </fieldset>
 
-        <!--  查询条件表单项 -->
-        <form class="layui-form" th:action="@{/every}" method="get">
+        <form class="layui-form" action="">
 
-            <fieldset class="layui-elem-field layui-field-title" style="margin-top: 20px;">
-                <legend>查询每日数据</legend>
-            </fieldset>
+            <!--            软件名称 所属平台 APP状态-->
             <div class="layui-form-item">
 
                 <div class="layui-inline">
-                    <label class="layui-form-label">日期(空为全部):</label>
+                    <label class="layui-form-label">软件名称:</label>
                     <div class="layui-input-inline">
-                        <input type="date" id="searchDate" name="searchDate" autocomplete="off" class="layui-input">
+                        <input type="text" id="softwareName"  autocomplete="off" class="layui-input">
                     </div>
                 </div>
+
+
                 <div class="layui-inline">
+                    <label class="layui-form-label">所属平台:</label>
                     <div class="layui-input-inline">
-                        <button type="button" id="searchBtn" name="searchBtn">搜索</button>
+                        <select id="flatformId" class="layui-input">
+                            <option value="0">--请选择--</option>
+                            <option th:each="flatForm : ${flatFormList}" th:value="${flatForm.valueId}" th:text="${flatForm.valueName}"></option>
+                        </select>
                     </div>
+                </div>
+
+                <div class="layui-inline">
+                    <label class="layui-form-label">APP状态:</label>
+                    <div class="layui-input-inline">
+                        <select id="appStatus" class="layui-input">
+                            <option value="0">--请选择--</option>
+                            <option th:each="status : ${appStatusList}" th:value="${status.valueId}" th:text="${status.valueName}"></option>
+                        </select>
+                    </div>
+                </div>
+
+            </div>
+            <!--一级分类,二级分类,三级分类-->
+            <div class="layui-form-item">
+
+                <div class="layui-inline">
+                    <label class="layui-form-label">一级分类:</label>
+                    <div class="layui-input-inline">
+                        <select id="levelOne" lay-filter="levelOne" class="layui-input">
+                            <option th:value="0">--请选择--</option>
+                            <option th:each="one : ${categoryLevelOneList}" th:value="${one.id}" th:text="${one.categoryName}"></option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="layui-inline">
+                    <label class="layui-form-label">二级分类:</label>
+                    <div class="layui-input-inline">
+                        <select  lay-filter="levelTwo" id="levelTwo" class="layui-input">
+                            <option value="0">--请选择--</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="layui-inline">
+                    <label class="layui-form-label">三级分类:</label>
+                    <div class="layui-input-inline">
+                        <select  id="levelThree" class="layui-input">
+                            <option value="0">--请选择--</option>
+                        </select>
+                    </div>
+                </div>
+
+            </div>
+
+            <!--查询按钮和重置按钮-->
+            <div class="layui-form-item">
+                <div class="layui-input-block">
+                    <button class="layui-btn" id="appInfoBtn" type="button" >查询</button>
+                    <button type="reset" class="layui-btn layui-btn-primary">重置</button>
                 </div>
             </div>
 
         </form>
-        <div class="layui-inline">
-            <label class="layui-form-label">总价:</label>
-            <div class="layui-input-inline">
-                <input type="text" id="sum" name="sum" th:text="${sumMoney}" disabled  class="layui-input">
+
+
+        <fieldset class="layui-elem-field layui-field-title" style="margin-top: 20px;">
+            <legend>app基础信息数据列表</legend>
+        </fieldset>
+
+        <!--table-->
+        <table class="layui-hide" id="appMaintain" lay-filter="appMaintain"></table>
+
+        <!--头工具-->
+        <script type="text/html" id="app-info-header-toolbar">
+            <div class="layui-btn-container">
+                <button class="layui-btn layui-btn-normal" type="button" lay-event="add"><i class="layui-icon layui-icon-add-1"></i>添加</button>
+                <button class="layui-btn layui-btn-warm" type="button" lay-event="up"><i class="layui-icon layui-icon-up"></i>上架</button>
+                <button class="layui-btn layui-btn-warm" type="button" lay-event="down"><i class="layui-icon layui-icon-down"></i>下架</button>
+                <button class="layui-btn layui-btn-danger" type="button" lay-event="delete"><i class="layui-icon layui-icon-delete"></i>删除</button>
             </div>
-        </div>
+        </script>
 
+        <!--行工具-->
+        <script type="text/html" id="barDemo">
+            <a class="layui-btn layui-btn-xs" lay-event="info-edit"><i class="layui-icon layui-icon-edit"></i>编辑</a>
+            <a class="layui-btn layui-btn-normal layui-btn-xs" lay-event="version-add"><i class="layui-icon layui-icon-add-1"></i>新增APP版本</a>
+            <a class="layui-btn layui-btn-xs" lay-event="version-edit"><i class="layui-icon layui-icon-edit"></i>修改APP版本</a>
+            <a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="info"><i class="layui-icon layui-icon-file-b"></i>查看</a>
+        </script>
 
-        <table class="layui-hide" id="orderTable" lay-filter="orderTable"></table>
     </div>
-    <div th:replace="main/common::footer"></div>
 
+
+    <!--引入底部-->
+    <div th:replace="~{dev/app/common :: footer}">
+    </div>
 </div>
-</body>
-<script>
-
-</script>
+<script th:src="@{/layui/layui.js}" charset="utf-8"></script>
+<script th:src="@{/layui/app.js}" charset="utf-8"></script>
 <script th:inline="none">
-
     //JavaScript代码区域
-    layui.use(['element','table'], function(){
-        var table = layui.table;
+    layui.use(['element','form','table'],function () {
         var element = layui.element;
-        var $ = layui.jquery;
+        var form = layui.form;
+        var table = layui.table;
+        $ = layui.$;
+        //layui其他功能
 
-        var mainTable = table.render({
-            elem: '#orderTable'
-            ,url:'/monlist'
+        //一级分类联动二级分类.
+        form.on('select(levelOne)',function (data) {
+            //1.获取到了被选中的select
+            var parentId = data.value;
+            //2.调用函数,查询二级分类,并封装
+            findLevelTwo(parentId,form);
+        });
+
+        //二级分类联动三级分类.
+        form.on('select(levelTwo)',function (data) {
+            //1.获取到了被选中的select
+            var parentId = data.value;
+            //2.调用函数,查询二级分类,并封装
+            findLevelThree(parentId,form);
+        });
+
+        //table表格的渲染
+        table.render({
+            //选中需要渲染的table标签
+            elem: '#appMaintain'
+            //获取json数据,在table中显示
+            ,url: '/dev/app/list'
+            //绑定头部工具栏
+            ,toolbar: '#app-info-header-toolbar'
+            //指定表格标题
+            ,title: '用户数据表'
+            //设置列 field需要与url中响应的json有映射的关系
             ,cols: [[
-                {field:'userId',title: '用户ID'}
-                ,{field:'userName',title: '用户名'}
-                ,{field:'userPhone', title: '电话'}
-                ,{field:'userAddress',  title: '住址'}
-                ,{field:'userCode', title: '激活码'}
-                ,{field:'userCreate', title: '注册日期'}
-                ,{field:'userStatus', title: '状态'}
-                ,{field:'userEmail', title: '邮箱'}
+                {type: 'checkbox', fixed: 'left'}
+                ,{field: 'softwareName', title: '软件名称'}
+                ,{field: 'supportRom', title: '支持的ROM版本'}
+                ,{field: 'interfaceLanguage', title: '界面语言'}
+                ,{field: 'softwareSize', title: '软件大小'}
+                ,{field: 'appStatusName', title: 'APP状态'}
+                ,{field: 'flatformName', title: '所属平台'}
+                ,{field: 'downloads', title: '下载次数'}
+                ,{field: 'categoryLevelOneName', title: '一级分类'}
+                ,{field: 'categoryLevelTwoName', title: '二级分类'}
+                ,{field: 'categoryLevelThreeName', title: '三级分类'}
+                ,{field: 'versionNo', title: '最新版本号'}
+                ,{fixed: 'right', title: '操作', toolbar: '#barDemo', width:150}
             ]]
+            //开启分页
             ,page: true
         });
 
-        // $("#searchBtn").click(function () {
-        //     table.reload('orderTable',{
-        //         where:{
-        //             userId: $("#userId").val()
-        //             ,productName: $("#productName").val()
-        //             ,orderStatus: $("#orderStatus").val()
-        //         }
-        //     })
-        // });
+        //给查询按钮绑定单击事件.
+        $("#appInfoBtn").click(function () {
+            //表格重载
+            table.reload('appMaintain',{
+                where: {//设定异步数据接口的额外参数,任意设
+                    softwareName: $("#softwareName").val()
+                    ,flatformId: $("#flatformId").val()
+                    ,appStatus: $("#appStatus").val()
+                    ,categoryLevel1: $("#levelOne").val()
+                    ,categoryLevel2: $("#levelTwo").val()
+                    ,categoryLevel3: $("#levelThree").val()
+                }
+            });
+        });
+
+        //监听头工具栏的事件
+        table.on('toolbar(appMaintain)',function (obj) {
+            var checkStatus = table.checkStatus(obj.config.id);
+            console.log(checkStatus.data);//获取选中行的数据
+            switch(obj.event){
+                case 'add':
+                    layer.open({
+                        type: 2,
+                        content: '/dev/app/info-add-ui',//这里是一个URL,如果你不想让iframe出现滚动条,你还可以content: ['http://sentsin.com','no']
+                        area: ['1000px','800px'],
+                        end: function () {
+                            table.reload('appMaintain');
+                        }
+                    });
+                    break;
+                case 'up':
+                    var data = checkStatus.data;
+                    layer.alert(JSON.stringify(data));
+                    break;
+                case 'down':
+                    layer.alert('下架');
+                    break;
+                case 'delete':
+                    layer.confirm('真的删除行么',function (index) {
+                        obj.del();
+                        layer.close(index);
+                    });
+                    break;
+            };
+        });
+
+        //监听行工具事件
+        table.on('tool(appMaintain)',function (obj) {
+            var data = obj.data; //获得当前行数据
+            var layEvent = obj.event; //获得lay-event对应的值(也可以是表头的event参数对应的值)
+            var tr = obj.tr; //获得当前行tr的DOM对象
+
+            alert(data.id);
+            console.log(data.softwareName);
+            console.log(layEvent);
+            console.log(tr);
+            if (obj.event === 'info-edit'){
+                layer.alert("修改基础信息");
+            }else if (obj.event === 'version-add'){
+                layer.alert("添加APP版本信息")
+            }else if (obj.event === 'version-edit'){
+                layer.alert("修改APP版本信息")
+            }else if (obj.event === 'info') {
+                layer.alert("查看");
+            }
+        });
+
     });
 </script>
+
+</body>
 </html>

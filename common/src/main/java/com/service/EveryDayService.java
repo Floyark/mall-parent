@@ -3,6 +3,7 @@ package com.service;
 import com.form.UserForm;
 import com.pojo.User;
 import com.vo.LayUITableVO;
+import com.vo.SumVO;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -17,9 +18,9 @@ import java.util.List;
 public interface EveryDayService {
 
     //统计每天的注册用户数量
-    LayUITableVO findRegisterByDate(String userCreate, UserForm userForm);
+    LayUITableVO<User> findRegisterByDate(UserForm userForm);
 
     //统计每天的营业额
-    BigDecimal findTurnoverByDate(String  purchaseDate);
+    SumVO findTurnoverByDate(String  purchaseDate);
 
 }

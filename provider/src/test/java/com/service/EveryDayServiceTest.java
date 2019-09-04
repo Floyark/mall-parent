@@ -1,7 +1,10 @@
 package com.service;
 
 import com.ProviderTest;
+import com.form.UserForm;
 import com.pojo.User;
+import com.vo.LayUITableVO;
+import com.vo.SumVO;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -23,30 +26,36 @@ public class EveryDayServiceTest extends ProviderTest {
     @Autowired
     private EveryDayService everyDayService;
 
-    //@Test
-    //public void findRegisterByDate() {
-    //
-    //    List<User> list = null;
-    //    String primary = "2019-08-25 1:2:3";
-    //    String pattern = "yyyy-MM-dd hh:mm:ss";
-    //    String fmt = "yyyy-MM-dd";
-    //
-    //    try {
-    //        list = everyDayService.findRegisterByDate(new SimpleDateFormat(fmt).format(new SimpleDateFormat(pattern).parse(primary)));
-    //    } catch (ParseException e) {
-    //        e.printStackTrace();
-    //    }
-    //    for (User user : list) {
-    //        System.out.println(user.toString());
-    //    }
-    //
-    //}
-    //
-    //@Test
-    //public void findTurnoverByDate() {
-    //
-    //    BigDecimal sumMoney = everyDayService.findTurnoverByDate("");
-    //    System.err.println(sumMoney);
-    //
-    //}
+    @Test
+    public void findRegisterByDate() {
+
+        //List<User> list = null;
+        //String primary = "2019-08-25 1:2:3";
+        //String pattern = "yyyy-MM-dd hh:mm:ss";
+        //String fmt = "yyyy-MM-dd";
+
+        //try {
+        //    list = everyDayService.findRegisterByDate(new SimpleDateFormat(fmt).format(new SimpleDateFormat(pattern).parse(primary)));
+        //} catch (ParseException e) {
+        //    e.printStackTrace();
+        //}
+        //for (User user : list) {
+        //    System.out.println(user.toString());
+        //}
+        UserForm userForm = new UserForm();
+        userForm.setLimit(1);
+        userForm.setPage(1);
+        userForm.setUserCreate("2019-09-03");
+        LayUITableVO<User> registerByDate = everyDayService.findRegisterByDate(userForm);
+        System.err.println(registerByDate);
+
+    }
+
+    @Test
+    public void findTurnoverByDate() {
+
+        SumVO sumVO = everyDayService.findTurnoverByDate("2019-09-01");
+        System.err.println(sumVO);
+
+    }
 }

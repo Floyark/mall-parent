@@ -21,8 +21,6 @@ public class User  implements Serializable {
 	private String userAddress;
 
 
-	private String userCode;
-
 	private java.util.Date userCreate;
 
 

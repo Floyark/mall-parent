@@ -1,6 +1,7 @@
 package com.mapper;
 
 import com.ProviderTest;
+import com.form.UserForm;
 import com.pojo.User;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,7 +24,11 @@ public class EveryDayMapperTest extends ProviderTest {
     @Test
     public void findRegisterByDate() {
 
-        List<User> count = everyDayMapper.findRegisterByDate(null);
+        UserForm userForm = new UserForm();
+        userForm.setLimit(1);
+        userForm.setPage(1);
+        userForm.setUserCreate("2019-09-04");
+        List<User> count = everyDayMapper.findRegisterByDate(userForm);
         for (User user : count) {
             System.out.println(user.toString());
         }

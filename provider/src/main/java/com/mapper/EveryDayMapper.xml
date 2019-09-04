@@ -6,13 +6,12 @@
 
     <!--//统计每天的注册用户数量-->
     <!--List<User> findRegisterByDate(@Param("userCreate") Date date);-->
-    <select id="findRegisterByDate" resultType="com.pojo.User">
+    <select id="findRegisterByDate" resultType="com.pojo.User" parameterType="com.form.UserForm">
         select
             user_id userId,
             user_name userName,
             user_phone userPhone,
             user_address userAddress,
-            user_code userCode,
             user_create userCreate,
             user_status userStatus,
             user_email userEmail

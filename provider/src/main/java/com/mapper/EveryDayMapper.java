@@ -1,5 +1,6 @@
 package com.mapper;
 
+import com.form.UserForm;
 import com.pojo.User;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
@@ -18,7 +19,7 @@ import java.util.List;
 public interface EveryDayMapper {
 
     //统计每天的注册用户数量
-    List<User> findRegisterByDate(@Param("userCreate") String userCreate);
+    List<User> findRegisterByDate(UserForm userForm);
 
     //统计每天的营业额
     BigDecimal findTurnoverByDate(@Param("purchaseDate") String  purchaseDate);

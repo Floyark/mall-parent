@@ -28,32 +28,32 @@ import java.util.List;
 @Controller
 public class EveryDayController {
 
-    @Reference
-    EveryDayService everyDayService;
-
-    private Date DATE;
-
-    @GetMapping("/monlist")
-    @ResponseBody
-    public LayUITableVO everyDaySum( UserForm userForm){
-        //DATE=searchDate;
-        //System.out.println(searchDate);
-        //@DateTimeFormat(pattern = "yyyy-MM-dd")Date searchDate,
-        LayUITableVO vo = everyDayService.findRegisterByDate(new Date().toString(), userForm);
-
-
-        return vo;
-    }
-    @PostMapping("/sum")
-    public String getSum(@DateTimeFormat(pattern = "yyyy-MM-dd")Date searchDate,Model model){
-        BigDecimal sumMoney = everyDayService.findTurnoverByDate(searchDate.toString());
-        model.addAttribute("sumMoney",sumMoney);
-        return "sum";
-    }
-    @GetMapping("/every")
-    public String toEvery(){
-        return "/main/iframe/every";
-    }
+    //@Reference
+    //    //EveryDayService everyDayService;
+    //    //
+    //    //private Date DATE;
+    //    //
+    //    //@GetMapping("/monlist")
+    //    //@ResponseBody
+    //    //public LayUITableVO everyDaySum( UserForm userForm){
+    //    //    //DATE=searchDate;
+    //    //    //System.out.println(searchDate);
+    //    //    //@DateTimeFormat(pattern = "yyyy-MM-dd")Date searchDate,
+    //    //    LayUITableVO vo = everyDayService.findRegisterByDate(new Date().toString(), userForm);
+    //    //
+    //    //
+    //    //    return vo;
+    //    //}
+    //    //@PostMapping("/sum")
+    //    //public String getSum(@DateTimeFormat(pattern = "yyyy-MM-dd")Date searchDate,Model model){
+    //    //    BigDecimal sumMoney = everyDayService.findTurnoverByDate(searchDate.toString());
+    //    //    model.addAttribute("sumMoney",sumMoney);
+    //    //    return "sum";
+    //    //}
+    //    //@GetMapping("/every")
+    //    //public String toEvery(){
+    //    //    return "/main/iframe/every";
+    //    //}
 
 
 }
