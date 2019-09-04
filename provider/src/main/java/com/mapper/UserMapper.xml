@@ -30,4 +30,61 @@
         where user_phone = #{Email}
     </select>
 
+    <select id="getUserCacheInfo" resultType="com.dto.UserCacheDTO">
+        select
+        user_id userId,
+        user_phone userPhone,
+        user_email userEmail
+        from user_sub
+    </select>
+
+
+
+
+
+
+    <!--****使用email登录 插入验证码-->
+    <insert id="insertOrUpdateCodeByEmail">
+        insert into user_sub_email(user_email,user_code,user_login_time)
+        values (#{email},#{code},now())
+    </insert>
+    <!--****使用手机号登录 插入验证码-->
+    <insert id="insertOrUpdateCodeByPhone">
+        insert into user_sub_phone(user_phone,user_code,user_login_time)
+        values (#{phone},#{code},now())
+    </insert>
+    <!--****根据传来的 表名 email或者phone 使验证码失效-->
+    <update id="closeCodeStatus">
+        update ${tableName}
+        set user_code_status = 0
+        where ${column} = #{parttern} and user_code_status = 1
+    </update>
+    <!--****判断登录邮箱和验证码是否匹配-->
+    <select id="checkCodeByEmail"  parameterType="com.dto.LoginDTO" resultType="Integer">
+        select count(1)
+        from user_sub_email
+        where user_email = #{inputAccount}
+        and user_code = #{code}
+        and user_code_status = 1
+    </select>
+    <!--****判断登录手机号和验证码是否匹配-->
+    <select id="checkCodeByPhone"  parameterType="com.dto.LoginDTO" resultType="Integer">
+        select count(1)
+        from user_sub_phone
+        where user_mail = #{inputAccount}
+        and user_code = #{code}
+        and user_code_status = 1
+    </select>
+    <!--####根据email获取id-->
+    <select id="getUserIdByEmail" parameterType="String" resultType="Integer">
+        select user_id
+        from user_sub
+        where user_email = #{inputAccount}
+    </select>
+    <!--####根据email获取id-->
+    <select id="getUserIdByPhone" parameterType="String"  resultType="Integer">
+        select user_id
+        from user_sub
+        where user_phone = #{inputAccount}
+    </select>
 </mapper>

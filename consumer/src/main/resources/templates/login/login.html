@@ -17,8 +17,8 @@
             <div style="padding-left: 40%">
                 <h2 class="form-signin-heading">Please sign in</h2>
             </div>
-            <label for="inputAccount" class="sr-only" ></label>
-            <input type="number" id="inputAccount" name="inputAccount" class="form-control" placeholder="手机号或邮箱登录" required="" autofocus=""><span id="phoneText"></span>
+            <label for="pattern" class="sr-only" ></label>
+            <input  id="inputAccount" name="inputAccount" class="form-control" placeholder="手机号或邮箱登录" required="" autofocus=""><span id="phoneText"></span>
             <label for="code" class="sr-only" >验证码</label><button type="button" id="send">发送验证码</button><span id="codeState"/>
             <input  type="number" required=""  id="code" name="code"  placeholder="Verify Code">
             <button class="btn btn-lg btn-primary btn-block" type="submit">Sign in</button>
@@ -32,7 +32,7 @@
 
 <!--自定义js-->
 <script>
-
+    //****点击发送验证码
     $("#send").click(function () {
 
         if($("#inputAccount").val()==''){
@@ -43,7 +43,7 @@
         $.ajax({
             url:"/sendCode",
             data:{
-                "pattern":$("#inputAccount").val(),
+                "inputAccount":$("#inputAccount").val(),
             },
             dataType:"JSON",
             type:"post",

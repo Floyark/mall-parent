@@ -8,13 +8,10 @@ import java.io.Serializable;
 public class Product  implements Serializable {
 
 	private Integer productId;
-
 	private String productName;
-
-
-	private Integer procuctStock;
-
-
+	private Integer productStock;
+	private Integer productStatus;
+	private String productPic;
 	private java.math.BigDecimal productPrice;
 
 }

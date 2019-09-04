@@ -1,14 +1,37 @@
 package com.mapper;
 
+import com.dto.LoginDTO;
+import com.dto.UserCacheDTO;
 import com.pojo.User;
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
+
+import java.util.List;
 
 @Mapper
 public interface UserMapper {
 
-    //根据手机号查询user
     User getUserByPhoneNumber(String phoneNumber);
-
-    //通过邮箱查询user
     User getUserByEmail(String Email);
+
+    List<UserCacheDTO> getUserCacheInfo();
+
+
+
+
+
+    //****用户使用邮箱登录 插入验证码
+    Integer insertOrUpdateCodeByEmail(@Param(value = "email")String email,@Param(value = "code")String code);
+    //****用户使用手机号登录 插入验证码
+    Integer insertOrUpdateCodeByPhone(@Param(value = "phone")String phone,@Param(value = "code")String code);
+    //****根据传来的 表名 email或者phone 使验证码失效
+    void closeCodeStatus(@Param(value = "tableName") String tableName,@Param(value = "column") String column,@Param(value = "parttern")String pattern);
+    //****判断登录名和验证码是否匹配
+    Integer checkCodeByEmail(LoginDTO loginDTO);
+    //****判断登录名和验证码是否匹配
+    Integer checkCodeByPhone(LoginDTO loginDTO);
+    //****根据email获取用户的id
+    Integer getUserIdByEmail(String inputAccount);
+    //****根据Phone获取用户的id
+    Integer getUserIdByPhone(String inputAccount);
 }

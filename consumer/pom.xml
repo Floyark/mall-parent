@@ -27,11 +27,7 @@
             <artifactId>spring-boot-starter-thymeleaf</artifactId>
             <version>${spring-boot-starter-thymeleaf}</version>
         </dependency>
-        <dependency>
-            <groupId>com.qianfeng.mall</groupId>
-            <artifactId>common</artifactId>
-            <version>1.0-SNAPSHOT</version>
-        </dependency>
+
 
     </dependencies>
 

@@ -7,15 +7,14 @@
         select
         o.order_id orderId,
         o.user_id userId,
-        o.product_id productId,
         o.payment payment,
-        o.quantity quantity,
         o.status status,
         o.pruchase_date pruchaseDate,
         u.user_name userName,
         p.product_name productName
         from orders o
         inner join users u on u.user_id = o.user_id
+        <!--inner join order_product op on op.-->
         inner join product p on p.product_id = o.product_id
         <where>
             <if test="userId!=null and userId !=0">
@@ -29,8 +28,24 @@
             </if>
         </where>
     </select>
+
     <select id="getOrderStatus" resultType="com.pojo.OrderStatus">
         select order_status_id orderStatusId,order_status_name orderStatusName
         from order_status
     </select>
+
+    <!--新增用户订单-->
+    <insert id="insertNewOrder">
+        insert into orders(order_id,user_id,payment,status,pruchase_date)
+        values (#{orderId},#{userId},#{payment},0,now())
+    </insert>
+
+    <!--将用户购买的商品记录到order-item表中-->
+    <insert id="insertNewOrderItem" parameterType="List">
+        insert into order_item(order_id,product_id,product_quantity)
+        values
+        <foreach collection="list" item="item" separator=","  index="index">
+            (#{item.orderId},#{item.productId},#{item.productQuantity})
+        </foreach>
+    </insert>
 </mapper>

@@ -17,10 +17,10 @@ public class TableResponse<T> {
 
     private Integer code =0;
     private String msg="success";
-    private Integer count;
+    private long count;
     private T data;
 
-    public TableResponse(Integer count, T data) {
+    public TableResponse(long count, T data) {
         this.count = count;
         this.data = data;
     }

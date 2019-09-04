@@ -2,10 +2,19 @@ package com.util;
 
 import com.response.ServerResponse;
 import lombok.Data;
+import org.omg.CORBA.PUBLIC_MEMBER;
 
 @Data
 public class ResponseUtil {
 
+    /**
+     * 返回成功结果 并传递信息msg
+     * @param msg
+     * @return
+     */
+    public static ServerResponse successWithMsg(String msg){
+        return new ServerResponse(200,msg,null);
+    }
     /**
      * 返回成功结果 并传递数据。
      * @param o

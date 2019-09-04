@@ -11,12 +11,9 @@
 
     <artifactId>common</artifactId>
     <dependencies>
-        <dependency>
-            <groupId>com.qianfeng.mall</groupId>
-            <artifactId>common</artifactId>
-            <version>1.0-SNAPSHOT</version>
-        </dependency>
-    </dependencies>
 
+
+
+    </dependencies>
 
 </project>
