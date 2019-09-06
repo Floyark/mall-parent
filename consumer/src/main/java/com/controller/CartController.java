@@ -7,6 +7,7 @@ import com.response.ServerResponse;
 import com.service.CartService;
 import com.service.OrderService;
 import com.service.ProductService;
+import com.service.UserService;
 import com.util.ResponseUtil;
 import com.vo.CartVO;
 import org.springframework.stereotype.Controller;
@@ -31,10 +32,20 @@ public class CartController {
     CartService cartService;
     @Reference
     ProductService productService;
+    @Reference
+    UserService userService;
 
+    //展示购物车界面
     @RequestMapping("/cart.html")
     public ModelAndView getProductInfo(HttpSession httpSession){
-        Integer userId = (Integer) httpSession.getAttribute("userId");
+        String sessionId = (String) httpSession.getAttribute("sessionId");
+        Integer userId = userService.getUserId(sessionId);
+        if(userId==null){
+            return new ModelAndView("login/login.html");
+        }
+        if(userId==0){
+            return new ModelAndView("main/iframe/addUserInfo.html");
+        }
         //获取购物车商品 id 和 购买数量
         HashMap<Integer,Integer> cartItem = cartService.getCartItem(userId);
         if(cartItem==null){
@@ -51,7 +62,11 @@ public class CartController {
     @RequestMapping("/cart/put")
     public @ResponseBody ServerResponse putInCart(CartDTO cartDTO, HttpSession session){
 
-        Integer userId = (Integer) session.getAttribute("userId");
+        String sessionId = (String) session.getAttribute("sessionId");
+        Integer userId = userService.getUserId(sessionId);
+        if(userId==null){
+            return ResponseUtil.error("userId没有找到，重新登录");
+        }
         cartDTO.setUserId(userId);
         int result = cartService.putProductInRedis(cartDTO);
         if(result!=1){
@@ -59,7 +74,6 @@ public class CartController {
         }
         return ResponseUtil.success();
     }
-
 
 
 }

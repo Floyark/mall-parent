@@ -23,12 +23,12 @@ public class AdminPageController {
     @Reference
     OrderService orderService;
 
-    @RequestMapping("/main.html")
-    public ModelAndView toMain(HttpSession session){
-        session.setAttribute("userId",127);
-        ModelAndView modelAndView =new ModelAndView("main/iframe/main");
-        return modelAndView;
-    }
+//    @RequestMapping("/main.html")
+//    public ModelAndView toMain(HttpSession session){
+//        session.setAttribute("userId",127);
+//        ModelAndView modelAndView =new ModelAndView("main/iframe/main");
+//        return modelAndView;
+//    }
 
 
     @RequestMapping("/order.html")

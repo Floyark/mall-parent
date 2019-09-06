@@ -21,4 +21,6 @@ public interface UserService {
 
     //****共享session，保存userId
     void setUserId(String sessionId, Integer userId);
+    //****共享session，获取userId
+    Integer getUserId(String sessionId);
 }

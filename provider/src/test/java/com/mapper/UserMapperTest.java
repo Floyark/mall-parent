@@ -48,4 +48,9 @@ public class UserMapperTest extends ProviderTest {
         String partern = "123qwe";
         userMapper.closeCodeStatus(tableName,column,partern);
     }
+    @Test
+    public void getUserIdByEmail(){
+        int userIdByEmail = userMapper.getUserIdByEmail("zengtong123456789@193.com");
+        System.out.println(userIdByEmail);
+    }
 }

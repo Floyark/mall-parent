@@ -52,15 +52,18 @@ public class UserServiceImpl implements UserService {
     }
     //****验证登录参数是否正确
     public Integer checkLoginParam(LoginDTO loginDTO,Boolean isEmail) {
-        int codeExist = 0;
+        Integer codeExist = 0;
         if(isEmail){
             //email登录
             codeExist = userMapper.checkCodeByEmail(loginDTO);
+            System.out.println("codeExist:"+codeExist);
             if(codeExist==1){
                 //登录名和code值相匹配
                 //判断是游客还是会员
                 //查询数据库，返回0，说明是游客；返回其它数字，说明是会员
-                return userMapper.getUserIdByEmail(loginDTO.getInputAccount());
+                Integer userId = userMapper.getUserIdByEmail(loginDTO.getInputAccount());
+                System.out.println("userId"+userId);
+                return (userId==null)?0:userId;
             }
         }else{
             //手机号登录
@@ -69,7 +72,8 @@ public class UserServiceImpl implements UserService {
                 //登录名和code值相匹配
                 //判断是游客还是会员
                 //查询数据库，返回0，说明是游客；返回其它数字，说明是会员
-                return userMapper.getUserIdByPhone(loginDTO.getInputAccount());
+                Integer userId = userMapper.getUserIdByPhone(loginDTO.getInputAccount());
+                return (userId==null)?0:userId;
             }
         }
         //返回-1 表示 登录的账号和验证码不匹配
@@ -80,8 +84,8 @@ public class UserServiceImpl implements UserService {
         redisTemplate.opsForValue().set(sessionId,userId);
     }
     //****sessionId为key，从redis中获取userId
-    public Integer getUserId(String sessionId, Integer userId) {
-         return redisTemplate.opsForValue().get(sessionId);
+    public Integer getUserId(String sessionId) {
+        return redisTemplate.opsForValue().get(sessionId);
     }
     //****生成验证码，并且保存到user副表中     (未完成)删除过期的code用 quarz更改条目状态
     public String createAndSaveCode(String pattern,String type){

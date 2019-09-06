@@ -10,6 +10,7 @@ import com.mapper.ProductMapper;
 import com.pojo.OrderStatus;
 import com.pojo.Product;
 import com.service.OrderService;
+import com.service.PayService;
 import com.service.ProductService;
 import com.vo.OrderVO;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,6 +29,9 @@ public class OrderServiceImpl implements OrderService {
 
     @Autowired
     OrderMapper orderMapper;
+
+    @Autowired
+    PayService payService;
 
     @Resource
     RedisTemplate<String,Integer>redisTemplate;
@@ -99,7 +103,7 @@ public class OrderServiceImpl implements OrderService {
             throw new RuntimeException("订单项目没有插入到item表中");
         }
 
-        String qrPath ="qrPath";
+        String qrPath = payService.getPayQr(map);
         return qrPath;
     }
 

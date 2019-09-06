@@ -62,10 +62,13 @@ public class LoginController {
         Boolean isEmail  = loginDTO.getInputAccount().matches("\\w+([-+.]\\w+)*@\\w+([-.]\\w+)*\\.\\w+([-.]\\w+)*");
         //判断验证码和登录名是否匹配，并且返回userId，0为游客
         Integer userId = userService.checkLoginParam(loginDTO,isEmail);
+        if(userId==-1){
+            return new ModelAndView("login/login");
+        }
         String sessionId = session.getId();
         userService.setUserId(sessionId,userId);
+        session.setAttribute("sessionId",sessionId);
         ModelAndView modelAndView = new ModelAndView("main/iframe/main");
-        modelAndView.addObject("SessionId",sessionId);
         return modelAndView;
     }
 
