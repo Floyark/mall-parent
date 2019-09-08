@@ -8,6 +8,9 @@ import java.io.Serializable;
 @Data
 public class LoginDTO implements Serializable {
 
+
+    private Integer userId;
+
     @NotEmpty
     private String inputAccount;
     @NotEmpty

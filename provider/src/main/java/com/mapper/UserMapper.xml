@@ -44,12 +44,12 @@
 
 
     <!--****使用email登录 插入验证码-->
-    <insert id="insertOrUpdateCodeByEmail">
+    <insert id="insertCodeByEmail">
         insert into user_sub_email(user_email,user_code,user_login_time)
         values (#{email},#{code},now())
     </insert>
     <!--****使用手机号登录 插入验证码-->
-    <insert id="insertOrUpdateCodeByPhone">
+    <insert id="insertCodeByPhone">
         insert into user_sub_phone(user_phone,user_code,user_login_time)
         values (#{phone},#{code},now())
     </insert>
@@ -61,7 +61,7 @@
     </update>
     <!--****判断登录邮箱和验证码是否匹配-->
     <select id="checkCodeByEmail"  parameterType="com.dto.LoginDTO" resultType="Integer">
-        select count(1)
+        select id
         from user_sub_email
         where user_email = #{inputAccount}
         and user_code = #{code}
@@ -69,9 +69,9 @@
     </select>
     <!--****判断登录手机号和验证码是否匹配-->
     <select id="checkCodeByPhone"  parameterType="com.dto.LoginDTO" resultType="Integer">
-        select count(1)
+        select id
         from user_sub_phone
-        where user_mail = #{inputAccount}
+        where user_phone = #{inputAccount}
         and user_code = #{code}
         and user_code_status = 1
     </select>
@@ -87,4 +87,14 @@
         from user_sub
         where user_phone = #{inputAccount}
     </select>
+    <!--####根据id获取游客的email-->
+    <select id="getGuestEmailByUserId" resultType="java.lang.String">
+        select user_email
+        from user_sub_email
+        where id = #{userId}
+    </select>
+    <insert id="inserNewUser" parameterType="com.dto.UserDTO" useGeneratedKeys="true" keyProperty="userId">
+        insert into user(user_name,user_phone,user_address,user_email)
+        values (#{userName},#{userPhone},#{userAddress},#{userEmail})
+    </insert>
 </mapper>

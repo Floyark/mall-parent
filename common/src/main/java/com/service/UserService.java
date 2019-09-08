@@ -2,6 +2,7 @@ package com.service;
 
 import com.dto.LoginDTO;
 import com.dto.UserCacheDTO;
+import com.dto.UserDTO;
 import com.pojo.User;
 
 import java.util.List;
@@ -23,4 +24,8 @@ public interface UserService {
     void setUserId(String sessionId, Integer userId);
     //****共享session，获取userId
     Integer getUserId(String sessionId);
+    //****根据用户id的单复数，判断用户是Email还是手机号登录
+    String getUserIdByEmail(int userId);
+    //****插入新用户信息，返回用户id
+    Integer insertNewUser(UserDTO userDTO);
 }

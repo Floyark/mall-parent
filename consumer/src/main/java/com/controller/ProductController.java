@@ -7,6 +7,7 @@ import com.pojo.Product;
 import com.response.ServerResponse;
 import com.response.TableResponse;
 import com.service.ProductService;
+import com.service.UserService;
 import com.util.ResponseUtil;
 import com.vo.ProductDetailVO;
 import com.vo.ProductInfoVO;
@@ -19,6 +20,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
+import javax.servlet.http.HttpSession;
 import javax.websocket.server.PathParam;
 import java.util.List;
 
@@ -29,9 +31,29 @@ public class ProductController {
     @Reference
     ProductService productService;
 
+    @Reference
+    UserService userService;
     //****查询产品详细信息
     @RequestMapping("/productInfo.html/{id}")
-    public ModelAndView getProductInfoById(@PathVariable Integer id){
+    public ModelAndView getProductInfoById(@PathVariable Integer id, HttpSession session){
+        String sessionId = session.getId();
+        Integer userId = userService.getUserId(sessionId);
+        if(userId == null){
+            return new ModelAndView("login/login");
+        }
+        if(userId<0){
+            ModelAndView modelAndView = new ModelAndView("main/iframe/addUserInfo.html");
+            if(-userId%2==0){
+                //用户id单复数，判断用户是邮件登录(负数)   还是手机号登录（单数）
+                System.out.println("判断进入邮件email");
+                String email = userService.getUserIdByEmail(-userId);
+                System.out.println("游客id为"+userId+":"+email);
+                modelAndView.addObject("email",email);
+            }else{
+                System.out.println("判断进入手机号iphone");
+            }
+            return modelAndView;
+        }
         ModelAndView modelAndView=new ModelAndView("main/iframe/productDetail.html");
         //数据库中查找数据
         Product product = productService.getProductById(id);
@@ -67,7 +89,7 @@ public class ProductController {
        if(result==1){
            return ResponseUtil.success();
        }
-       return ResponseUtil.error("删除失败");
+       return ResponseUtil.error("删除失败",30);
     }
 
     //****修改商品信息

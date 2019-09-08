@@ -3,6 +3,7 @@ package com.serviceImpl;
 import com.alibaba.dubbo.config.annotation.Service;
 import com.dto.LoginDTO;
 import com.dto.UserCacheDTO;
+import com.dto.UserDTO;
 import com.exception.MyException;
 import com.mapper.UserMapper;
 import com.pojo.User;
@@ -56,25 +57,31 @@ public class UserServiceImpl implements UserService {
         if(isEmail){
             //email登录
             codeExist = userMapper.checkCodeByEmail(loginDTO);
-            System.out.println("codeExist:"+codeExist);
-            if(codeExist==1){
+            if(codeExist!=null){
                 //登录名和code值相匹配
                 //判断是游客还是会员
-                //查询数据库，返回0，说明是游客；返回其它数字，说明是会员
+                //返回null值为游客
                 Integer userId = userMapper.getUserIdByEmail(loginDTO.getInputAccount());
-                System.out.println("userId"+userId);
-                return (userId==null)?0:userId;
+                if(userId!=null){
+                    System.out.println("用户为会员："+userId);
+                    return userId;
+                }
+                return -codeExist;
             }
         }else{
             //手机号登录
             codeExist = userMapper.checkCodeByPhone(loginDTO);
-            if(codeExist==1){
+            if(codeExist!=null){
                 //登录名和code值相匹配
                 //判断是游客还是会员
-                //查询数据库，返回0，说明是游客；返回其它数字，说明是会员
+                //返回null为游客
                 Integer userId = userMapper.getUserIdByPhone(loginDTO.getInputAccount());
-                return (userId==null)?0:userId;
+                if(userId!=null){
+                    System.out.println("用户为会员："+userId);
+                    return userId;
+                }
             }
+            return -codeExist;
         }
         //返回-1 表示 登录的账号和验证码不匹配
         return -1;
@@ -87,6 +94,17 @@ public class UserServiceImpl implements UserService {
     public Integer getUserId(String sessionId) {
         return redisTemplate.opsForValue().get(sessionId);
     }
+    //****根据游客userId获取email
+    public String getUserIdByEmail(int userId) {
+        return userMapper.getGuestEmailByUserId(userId);
+    }
+
+    //####插入新user信息
+    public Integer insertNewUser(UserDTO userDTO) {
+        userMapper.inserNewUser(userDTO);
+        return userDTO.getUserId();
+    }
+
     //****生成验证码，并且保存到user副表中     (未完成)删除过期的code用 quarz更改条目状态
     public String createAndSaveCode(String pattern,String type){
 
@@ -111,7 +129,8 @@ public class UserServiceImpl implements UserService {
             //如果之前有申请过验证码，使其无效
             userMapper.closeCodeStatus(emailTableName,emailColumn,pattern);
             //将code插入 user_sub_mail表
-            int result = userMapper.insertOrUpdateCodeByEmail(pattern,code);
+            int result = userMapper.insertCodeByEmail(pattern,code);
+            userMapper.insertCodeByEmail("","0");
             if(result!=1){
                 throw new MyException(ErrorMessage.EMAIL_CODE_INSERT_ERROR);
             }
@@ -122,7 +141,8 @@ public class UserServiceImpl implements UserService {
             //如果之前有申请过验证码，使其无效
             userMapper.closeCodeStatus(phoneTableName,phoneColumn,pattern);
             //将code插入 user_sub_phone表
-            Integer result = userMapper.insertOrUpdateCodeByPhone(pattern, code);
+            Integer result = userMapper.insertCodeByPhone(pattern, code);
+
             if(result!=1){
                 throw new MyException(ErrorMessage.PHONE_CODE_INSERT_ERROR);
             }

@@ -3,6 +3,7 @@ package com.mapper;
 import com.dto.InsertOrderItemDTO;
 import com.dto.SelectOrderDTO;
 import com.pojo.OrderStatus;
+import com.vo.OrderDetailVo;
 import com.vo.OrderVO;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
@@ -24,4 +25,7 @@ public interface OrderMapper {
     int insertNewOrder(@Param(value = "orderId") String orderId, @Param(value = "userId")int userId,@Param(value = "payment") BigDecimal payment);
 
     int insertNewOrderItem(List<InsertOrderItemDTO> list);
+
+    //****根据用户id 订单号 查询订单内的信息
+    List<OrderDetailVo> getOrderDetailInfo(@Param("orderId")String orderId,@Param("userId") Integer userId);
 }

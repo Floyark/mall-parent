@@ -107,10 +107,13 @@ public class ProductServiceImpl implements ProductService {
             }
         }
         //4.刷新到数据库
-        int result = productMapper.updateProductStock(newStock);
-        if(result!=orderItemList.size()){
-            throw new RuntimeException("修改仓库条目失败");
+        for (QuantityDTO quantityDTO : newStock) {
+            int result = productMapper.updateProductStock(quantityDTO);
+            if(result!=1){
+                throw new RuntimeException("更新库存失败");
+            }
         }
+
         return 1;
     }
 

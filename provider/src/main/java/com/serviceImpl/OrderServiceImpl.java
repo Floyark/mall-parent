@@ -12,6 +12,7 @@ import com.pojo.Product;
 import com.service.OrderService;
 import com.service.PayService;
 import com.service.ProductService;
+import com.vo.OrderDetailVo;
 import com.vo.OrderVO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.jaxb.SpringDataJaxb;
@@ -41,20 +42,18 @@ public class OrderServiceImpl implements OrderService {
 
     //****根据userId获取历史订单信息
     public PageInfo<OrderVO> getOrderInfo(SelectOrderDTO selectOrderDTO) {
-
-        selectOrderDTO.setUserId(127);
-
-
         PageHelper.startPage(selectOrderDTO.getPage(),selectOrderDTO.getLimit());
         List<OrderVO> orders= orderMapper.getOrderInfo(selectOrderDTO);
         return new PageInfo<OrderVO>(orders);
     }
 
+    //****订单页面的下拉栏填充
     public List<OrderStatus> getOrderStatus() {
         List<OrderStatus> orderStatus = orderMapper.getOrderStatus();
         return orderStatus;
     }
 
+    //****分解传来的 productId和quantity 封装成map
     public ConcurrentHashMap<Integer,Integer> parseItem(String context) {
         //分解参数
         String[] arrys= context.split(",");
@@ -66,7 +65,7 @@ public class OrderServiceImpl implements OrderService {
         return map;
     }
 
-    //计算订单总金额  map中是商品id 和 商品单价
+    //**** 计算订单总金额  map中是商品id 和 商品单价
     public BigDecimal getOrderPayMent(ConcurrentHashMap<Integer, Integer> map) {
         BigDecimal payment =new BigDecimal(0);
         Set<Map.Entry<Integer, Integer>> set = map.entrySet();
@@ -80,6 +79,7 @@ public class OrderServiceImpl implements OrderService {
         return payment;
     }
 
+    //**** 生成订单，返回二维码支付
     @Transactional
     public String createNewOrder(int userId, BigDecimal payment, ConcurrentHashMap<Integer, Integer> map) {
         //1.新建order订单号
@@ -105,6 +105,11 @@ public class OrderServiceImpl implements OrderService {
 
         String qrPath = payService.getPayQr(map);
         return qrPath;
+    }
+
+    public List<OrderDetailVo> getOrderDetailInfo(String orderId, Integer userId) {
+        return orderMapper.getOrderDetailInfo(orderId,userId);
+
     }
 
 

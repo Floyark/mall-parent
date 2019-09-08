@@ -32,37 +32,37 @@ public class PayController {
      * **支付回调 没法写验证
      */
 
-//    @RequestMapping("/payment")
-//    public ServerResponse payment(HttpServletRequest request,HttpServletResponse response){
-//        InputStream inputStream = null;
-//        BufferedReader reader = null;
-//        StringBuilder stringBuilder = new StringBuilder();
-//        try {
-//            inputStream = request.getInputStream();
-//            String line = null;
-//            reader = new BufferedReader(new InputStreamReader(inputStream,"utf-8"));
-//            while ((line =reader.readLine())!=null){
-//                stringBuilder.append(line);
-//            }
-//            String xml = stringBuilder.toString();
-//            System.out.println(xml);
-//            try {
-//                boolean isRight = WXPayUtil.isSignatureValid(xml, "sbNCm1JnevqI36LrEaxFwcaT0hkGxFnC");
-//                if(isRight){
-//                    Map<String,String> data=WXPayUtil.xmlToMap(xml);
-//                }
-//
-//
-//            } catch (Exception e) {
-//                e.printStackTrace();
-//            }
-//
-//
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        }
-//        return ResponseUtil.success();
-//    }
+    @RequestMapping("/payment")
+    public ServerResponse payment(HttpServletRequest request,HttpServletResponse response){
+        InputStream inputStream = null;
+        BufferedReader reader = null;
+        StringBuilder stringBuilder = new StringBuilder();
+        try {
+            inputStream = request.getInputStream();
+            String line = null;
+            reader = new BufferedReader(new InputStreamReader(inputStream,"utf-8"));
+            while ((line =reader.readLine())!=null){
+                stringBuilder.append(line);
+            }
+            String xml = stringBuilder.toString();
+            System.out.println(xml);
+            try {
+                boolean isRight = WXPayUtil.isSignatureValid(xml, "sbNCm1JnevqI36LrEaxFwcaT0hkGxFnC");
+                if(isRight){
+                    Map<String,String> data=WXPayUtil.xmlToMap(xml);
+                }
+
+
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return ResponseUtil.success();
+    }
 
 
     //****显示二维码图片

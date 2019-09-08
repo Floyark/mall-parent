@@ -43,8 +43,18 @@ public class CartController {
         if(userId==null){
             return new ModelAndView("login/login.html");
         }
-        if(userId==0){
-            return new ModelAndView("main/iframe/addUserInfo.html");
+        if(userId<0){
+            ModelAndView modelAndView = new ModelAndView("main/iframe/addUserInfo.html");
+            if(-userId%2==0){
+                //用户id单复数，判断用户是邮件登录(负数)   还是手机号登录（单数）
+                System.out.println("判断进入邮件email");
+                String email = userService.getUserIdByEmail(-userId);
+                System.out.println("游客id为"+userId+":"+email);
+                modelAndView.addObject("email",email);
+            }else{
+                System.out.println("判断进入手机号iphone");
+            }
+            return modelAndView;
         }
         //获取购物车商品 id 和 购买数量
         HashMap<Integer,Integer> cartItem = cartService.getCartItem(userId);
@@ -53,7 +63,7 @@ public class CartController {
         }
         //根据map中的商品id获取对应的商品，封装成CartVO
         List<CartVO> cartVOList = productService.getCartProductInfo(cartItem);
-        ModelAndView modelAndView=new ModelAndView("main/iframe/cart.html");
+        ModelAndView modelAndView = new ModelAndView("main/iframe/cart.html");
         modelAndView.addObject("list",cartVOList);
         return modelAndView;
     }
@@ -65,12 +75,15 @@ public class CartController {
         String sessionId = (String) session.getAttribute("sessionId");
         Integer userId = userService.getUserId(sessionId);
         if(userId==null){
-            return ResponseUtil.error("userId没有找到，重新登录");
+            return ResponseUtil.error("userId没有找到，重新登录",10);
+        }
+        if(userId<0){
+            return ResponseUtil.error("需要完善信息",20);
         }
         cartDTO.setUserId(userId);
         int result = cartService.putProductInRedis(cartDTO);
         if(result!=1){
-            return ResponseUtil.error("添加失败");
+            return ResponseUtil.error("添加失败",0);
         }
         return ResponseUtil.success();
     }

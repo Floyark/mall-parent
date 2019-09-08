@@ -3,6 +3,8 @@
 <head>
 
     <script src="http://code.jquery.com/jquery-latest.js"></script>
+    <link rel="stylesheet" th:href="@{/layui/css/layui.css}">
+    <script th:src="@{/layui/layui.js}"></script>
 </head>
 <body>
     <form>
@@ -39,6 +41,17 @@
 
 </body>
 <script>
+    //JavaScript代码区域
+    layui.use(['element','layer'], function(){
+        element = layui.element;
+        var $ = layui.jquery;
+        layer = layui.layer;
+
+    });
+</script>
+
+
+<script>
     function purchase() {
         var total = [[${product.productStock}]];
         var num = $("#pruchaseNumber").val();
@@ -57,9 +70,7 @@
             type:"post",
             success:function (result) {
                 if(result.code == 200){
-                    alert("成功")
-                }else{
-                    alert("失败")
+                    alert("添加成功")
                 }
             },
             error:function () {

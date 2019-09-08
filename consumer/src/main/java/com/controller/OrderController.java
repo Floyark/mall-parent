@@ -2,6 +2,7 @@ package com.controller;
 
 import com.alibaba.dubbo.config.annotation.Reference;
 import com.dto.SelectOrderDTO;
+import com.exception.MyException;
 import com.github.pagehelper.PageInfo;
 import com.response.ServerResponse;
 import com.response.TableResponse;
@@ -9,18 +10,21 @@ import com.service.CartService;
 import com.service.OrderService;
 import com.service.UserService;
 import com.util.ResponseUtil;
+import com.vo.OrderDetailVo;
 import com.vo.OrderVO;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import java.math.BigDecimal;
 import java.net.URLEncoder;
 import java.util.Date;
+import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 
 @Controller
@@ -64,4 +68,22 @@ public class OrderController {
         return ResponseUtil.successWithData(encode);
     }
 
+    //****查询orderId内的详细商品信息
+    @RequestMapping("/orderDetail.html")
+    public ModelAndView orderDetail(String orderId,HttpSession session){
+        //1、检查登录用户和orderId是否对应
+        String sessionId = session.getId();
+        Integer userId = userService.getUserId(sessionId);
+        if(userId==null){
+            throw new MyException("用户登录状态异常");
+        }
+        List<OrderDetailVo> orderDetailVoList = orderService.getOrderDetailInfo(orderId,userId);
+        if(orderDetailVoList==null){
+            throw new MyException("用户和订单信息不匹配");
+        }
+        ModelAndView modelAndView = new ModelAndView("main/iframe/orderDetail.html");
+        //查询出数据后填充 todo
+
+        return modelAndView;
+    }
 }

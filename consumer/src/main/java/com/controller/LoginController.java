@@ -46,7 +46,7 @@ public class LoginController {
         }
         //邮箱和手机的形式都不匹配
         else{
-            return  ResponseUtil.error("重新输入,参数有误");
+            return  ResponseUtil.error("重新输入,参数有误",40);
         }
         return ResponseUtil.successWithMsg("验证码已经发送~");
     }
