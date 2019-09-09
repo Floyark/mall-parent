@@ -2,8 +2,10 @@ package com.dto;
 
 import lombok.Data;
 
+import java.io.Serializable;
+
 @Data
-public class InsertOrderItemDTO {
+public class InsertOrderItemDTO implements Serializable {
 
     private String orderId;
     private Integer productId;

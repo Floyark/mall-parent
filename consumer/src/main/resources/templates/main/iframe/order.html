@@ -21,21 +21,13 @@
         <fieldset class="layui-elem-field layui-field-title" style="margin-top: 20px;">
             <legend>查询条件</legend>
         </fieldset>
-        <!--            软件名称 所属平台 APP状态-->
-        <div class="layui-form-item">
 
-            <!--<div class="layui-inline">-->
-                <!--<label class="layui-form-label">商品名称:</label>-->
-                <!--<div class="layui-input-inline">-->
-                    <!--<input type="text" id="productName" name="productName" autocomplete="off" class="layui-input">-->
-                <!--</div>-->
-            <!--</div>-->
+        <div class="layui-form-item">
             <div class="layui-inline">
                 <label class="layui-form-label">支付状态:</label>
                 <div class="layui-input-inline">
                     <select id="orderStatus" name="orderStatus" class="layui-input">
                         <option value="10">--请选择--</option>
-                        <!--${statu.orderStatusId==1?'已支付':'未支付'}-->
                         <option th:each="statu : ${status}" th:value="${statu.orderStatusId}" th:text="${statu.orderStatusName}"></option>
                     </select>
                 </div>
@@ -61,11 +53,6 @@
 <script type="text/html" id="barDemo">
     <a class="layui-btn layui-btn-xs" lay-event="toOrderDetail">查看详情</a>
 </script>
-<script>
-    $(function () {
-        console.log($("#userId").val());
-    })
-</script>
 <script th:inline="none">
 
     //JavaScript代码区域
@@ -77,6 +64,7 @@
         var mainTable = table.render({
             elem: '#orderTable'
             ,url:'/getOrderInfo'
+            ,method:'post'
             ,cols: [[
                 {field:'orderId',title: '订单号'}
                 ,{field:'userName',title: '用户名'}
@@ -93,7 +81,6 @@
         $("#searchBtn").click(function () {
             table.reload('orderTable',{
                 where:{
-                    //,productName: $("#productName").val()
                     orderStatus: $("#orderStatus").val()
                 }
             })
@@ -103,28 +90,16 @@
         //监听行工具事件
         table.on('tool(orderTable)', function(obj){
             var data = obj.data;
-            if(obj.event === 'toPay'){
-                layer.confirm('点击去支付', function(index){
-                    layer.close(index);
-                });
-            }
             if(obj.event === 'toOrderDetail'){
-                    alert(data.orderId);
+
                     //新弹窗界面
                 layer.open({
                     type: 2
-                    , content: '/orderDetail.html'
+                    , content: '/orderDetail.html/'+data.orderId
                     , area: ['1000px', '600px']
                     , btnAlign: 'c' //按钮居中
                     , shade: 0 //不显示遮罩
                 })
-
-
-
-
-
-
-
 
 
             }

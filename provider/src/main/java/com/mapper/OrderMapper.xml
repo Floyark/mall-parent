@@ -23,18 +23,19 @@
         </where>
     </select>
 
+    <!--####填充下拉列表-->
     <select id="getOrderStatus" resultType="com.pojo.OrderStatus">
         select order_status_id orderStatusId,order_status_name orderStatusName
         from order_status
     </select>
 
-    <!--新增用户订单-->
+    <!--####新增用户订单-->
     <insert id="insertNewOrder">
         insert into orders(order_id,user_id,payment,status,pruchase_date)
         values (#{orderId},#{userId},#{payment},0,now())
     </insert>
 
-    <!--将用户购买的商品记录到order-item表中-->
+    <!--####将用户购买的商品记录到order-item表中-->
     <insert id="insertNewOrderItem" parameterType="List">
         insert into order_item(order_id,product_id,product_quantity)
         values
@@ -43,7 +44,7 @@
         </foreach>
     </insert>
 
-    <!--根据orderId，获取购买的商品信息-->
+    <!--####根据orderId，获取购买的商品信息-->
     <select id="getOrderDetailInfo" resultMap="orderDetailVo">
         select
         o.order_id orderId,
@@ -52,7 +53,9 @@
         o.pruchase_date pruchase_date,
         p.product_name productName,
         i.product_quantity quantity,
-        i.product_id productId
+        i.product_id productId,
+        o.payment payment,
+        p.product_price price
 
         from orders o
         inner join user u on o.user_id = u.user_id
@@ -66,13 +69,30 @@
         <result property="userId" column="userId" javaType="integer"></result>
         <result property="userName" column="userName" javaType="string"></result>
         <result property="pruchase_date" column="pruchase_date" javaType="date"></result>
+        <result property="payment" column="payment" javaType="decimal"></result>
         <collection property="products" ofType="com.dto.productInfoForOrderDTO">
             <id property="productId" column="productId" javaType="integer"></id>
             <result property="productName" column="productName" javaType="string"></result>
             <result property="quantity" column="quantity" javaType="integer"></result>
+            <result property="price" column="price" javaType="decimal"></result>
         </collection>
 
 
     </resultMap>
+
+    <!--####检查用户id 订单id是否匹配-->
+    <select id="checkOrder" resultType="integer">
+        select 1
+        from orders
+        where order_id = #{orderId} and user_id = ${userId}
+        limit 1
+    </select>
+    <select id="getOrderItem" resultType="com.dto.QuantityDTO">
+        select
+        product_id productId,
+        product_quantity quantity
+        from order_item
+        where order_id = #{orderId}
+    </select>
 
 </mapper>

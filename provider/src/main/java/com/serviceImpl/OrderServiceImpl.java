@@ -2,6 +2,7 @@ package com.serviceImpl;
 
 import com.alibaba.dubbo.config.annotation.Service;
 import com.dto.InsertOrderItemDTO;
+import com.dto.QuantityDTO;
 import com.dto.SelectOrderDTO;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
@@ -14,6 +15,7 @@ import com.service.PayService;
 import com.service.ProductService;
 import com.vo.OrderDetailVo;
 import com.vo.OrderVO;
+import org.apache.ibatis.annotations.Param;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.jaxb.SpringDataJaxb;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -107,9 +109,27 @@ public class OrderServiceImpl implements OrderService {
         return qrPath;
     }
 
-    public List<OrderDetailVo> getOrderDetailInfo(String orderId, Integer userId) {
+    //**** 根据用户userId orderId 获取对应订单详情
+    public OrderDetailVo getOrderDetailInfo(String orderId, Integer userId) {
         return orderMapper.getOrderDetailInfo(orderId,userId);
+    }
 
+    public int checkOrder(Integer userId, String orderId) {
+        Integer result = orderMapper.checkOrder(userId,orderId);
+        if(result != 1 ){
+            return -1;
+        }
+        return 1;
+    }
+
+    //**** 将productId userId 封装成map
+    public ConcurrentHashMap<Integer, Integer> parseOrderDetails(String orderId) {
+        List<QuantityDTO> quantityDTO = orderMapper.getOrderItem(orderId);
+        ConcurrentHashMap<Integer,Integer> concurrentHashMap = new ConcurrentHashMap<Integer, Integer>();
+        for (QuantityDTO dto : quantityDTO) {
+            concurrentHashMap.put(dto.getProductId(),dto.getQuantity());
+        }
+        return concurrentHashMap;
     }
 
 

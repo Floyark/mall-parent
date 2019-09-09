@@ -25,5 +25,10 @@ public interface OrderService {
 
     String createNewOrder(int userId, BigDecimal payment, ConcurrentHashMap<Integer, Integer> map);
 
-    List<OrderDetailVo> getOrderDetailInfo(String orderId, Integer userId);
+    //****根据用户id 订单id 查询对应的订单信息
+    OrderDetailVo getOrderDetailInfo(String orderId, Integer userId);
+
+    int checkOrder(Integer userId, String orderId);
+
+    ConcurrentHashMap<Integer, Integer> parseOrderDetails(String orderId);
 }

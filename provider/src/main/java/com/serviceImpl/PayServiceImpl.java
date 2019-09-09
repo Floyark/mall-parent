@@ -66,5 +66,5 @@ public class PayServiceImpl implements PayService {
         String code_url = stringStringMap.get("code_url");
         return code_url;
     }
-    //****判断
+
 }
