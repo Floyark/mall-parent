@@ -3,6 +3,8 @@
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd](http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.mapper.UserMapper">
+
+    <!--这两个目前没用，别删-->
     <select id="getUserByPhoneNumber" parameterType="String" resultType="com.pojo.User">
         select
             user_id userId,
@@ -30,6 +32,9 @@
         where user_phone = #{Email}
     </select>
 
+
+
+    <!--****将数据放到缓存中，用户注册时，检查缓存，保证注册的邮箱和用户名不重复-->
     <select id="getUserCacheInfo" resultType="com.dto.UserCacheDTO">
         select
         user_id userId,
@@ -37,12 +42,6 @@
         user_email userEmail
         from user_sub
     </select>
-
-
-
-
-
-
     <!--****使用email登录 插入验证码-->
     <insert id="insertCodeByEmail">
         insert into user_sub_email(user_email,user_code,user_login_time)
@@ -93,6 +92,13 @@
         from user_sub_email
         where id = #{userId}
     </select>
+    <!--####根据id获取游客的phone-->
+    <select id="getGuestPhoneByUserId" resultType="java.lang.String">
+        select user_phone
+        from user_sub_phone
+        where id = #{userId}
+    </select>
+    <!--####插入新user数据-->
     <insert id="inserNewUser" parameterType="com.dto.UserDTO" useGeneratedKeys="true" keyProperty="userId">
         insert into user(user_name,user_phone,user_address,user_email)
         values (#{userName},#{userPhone},#{userAddress},#{userEmail})

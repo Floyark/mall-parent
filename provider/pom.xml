@@ -55,7 +55,12 @@
             <version>${spring-boot-starter-data-redis}</version>
         </dependency>
 
-
+        <!--云片短信sdk-->
+        <dependency>
+            <groupId>com.yunpian.sdk</groupId>
+            <artifactId>yunpian-java-sdk</artifactId>
+            <version>${yunpian-java-sdk}</version>
+        </dependency>
 
         <!-- https://mvnrepository.com/artifact/mysql/mysql-connector-java -->
         <dependency>

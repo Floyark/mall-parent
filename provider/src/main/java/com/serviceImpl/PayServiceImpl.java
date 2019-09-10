@@ -19,7 +19,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
-@Service
+@Service(interfaceClass = PayService.class)
 public class PayServiceImpl implements PayService {
 
     private static Map<String ,String> map = new HashMap<String, String>();

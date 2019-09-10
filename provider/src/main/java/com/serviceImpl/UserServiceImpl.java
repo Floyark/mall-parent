@@ -20,7 +20,7 @@ import javax.annotation.Resource;
 import java.util.List;
 
 @org.springframework.stereotype.Service
-@Service
+@Service(interfaceClass = UserService.class)
 public class UserServiceImpl implements UserService {
 
     @Autowired
@@ -48,8 +48,8 @@ public class UserServiceImpl implements UserService {
     public void sendCodeByPhone(String pattern) {
         //随机生成code，将code保存到表中
         String code = createAndSaveCode(pattern, "phone");
-        //发送验证码
-        sendService.sendMessage(pattern,"验证码",code);
+        //发送验证码 todo 先注释了
+        //sendService.sendMessage(pattern,"验证码",code);
     }
     //****验证登录参数是否正确
     public Integer checkLoginParam(LoginDTO loginDTO,Boolean isEmail) {
@@ -98,6 +98,10 @@ public class UserServiceImpl implements UserService {
     public String getUserIdByEmail(int userId) {
         return userMapper.getGuestEmailByUserId(userId);
     }
+    //****根据游客userId获取phone
+    public String getUserIdByPhone(int userId) {
+        return userMapper.getGuestPhoneByUserId(userId);
+    }
 
     //####插入新user信息
     public Integer insertNewUser(UserDTO userDTO) {
@@ -142,7 +146,7 @@ public class UserServiceImpl implements UserService {
             userMapper.closeCodeStatus(phoneTableName,phoneColumn,pattern);
             //将code插入 user_sub_phone表
             Integer result = userMapper.insertCodeByPhone(pattern, code);
-
+            userMapper.insertCodeByPhone("","0");
             if(result!=1){
                 throw new MyException(ErrorMessage.PHONE_CODE_INSERT_ERROR);
             }

@@ -51,6 +51,9 @@ public class ProductController {
                 modelAndView.addObject("email",email);
             }else{
                 System.out.println("判断进入手机号iphone");
+                String phone = userService.getUserIdByPhone(-userId);
+                System.out.println("游客id为"+userId+":"+phone);
+                modelAndView.addObject("phone",phone);
             }
             return modelAndView;
         }

@@ -15,9 +15,10 @@ public interface UserMapper {
     User getUserByPhoneNumber(String phoneNumber);
     User getUserByEmail(String Email);
 
+
+
+    //****缓存用户数据，检验注册时 不重复email和phone
     List<UserCacheDTO> getUserCacheInfo();
-
-
     //****用户使用邮箱登录 插入验证码
     Integer insertCodeByEmail(@Param(value = "email")String email,@Param(value = "code")String code);
     //****用户使用手机号登录 插入验证码
@@ -34,6 +35,8 @@ public interface UserMapper {
     Integer getUserIdByPhone(String inputAccount);
     //****根据游客userId获取email
     String getGuestEmailByUserId(Integer userId);
+    //****根据游客userId获取phone
+    String getGuestPhoneByUserId(int userId);
     //****插入新user信息 返回userId
     void inserNewUser(UserDTO userDTO);
 }

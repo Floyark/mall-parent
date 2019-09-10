@@ -8,7 +8,7 @@ import org.springframework.data.redis.core.RedisTemplate;
 import javax.annotation.Resource;
 import java.util.*;
 
-@Service
+@Service(interfaceClass = CartService.class)
 public class CartServiceImpl implements CartService {
 
     @Resource

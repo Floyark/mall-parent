@@ -52,7 +52,10 @@ public class CartController {
                 System.out.println("游客id为"+userId+":"+email);
                 modelAndView.addObject("email",email);
             }else{
-                System.out.println("判断进入手机号iphone");
+                System.out.println("判断进入手机号phone");
+                String phoneNumber = userService.getUserIdByPhone(-userId);
+                System.out.println("游客id为"+userId+":"+phoneNumber);
+                modelAndView.addObject("phone",phoneNumber);
             }
             return modelAndView;
         }

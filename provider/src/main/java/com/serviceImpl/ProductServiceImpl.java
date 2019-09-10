@@ -15,7 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
 
-@Service
+@Service(interfaceClass = ProductService.class)
 public class ProductServiceImpl implements ProductService {
 
     @Autowired

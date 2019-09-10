@@ -43,7 +43,7 @@ public class OrderController {
     PayService payService;
 
 
-    //****将order显示到订单查询中   @PathParam("orderStatus") Integer orderStatus,
+    //****将order显示到订单查询中
     @RequestMapping("/getOrderInfo")
     public @ResponseBody TableResponse getOrderInfoBySelected(SelectOrderDTO selectOrderDTO,HttpSession session){
         String sessionId = (String)session.getAttribute("sessionId");
