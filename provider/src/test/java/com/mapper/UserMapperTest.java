@@ -2,6 +2,7 @@ package com.mapper;
 
 import com.ProviderTest;
 import com.dto.UserCacheDTO;
+import com.dto.UserDTO;
 import com.pojo.User;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,7 +35,7 @@ public class UserMapperTest extends ProviderTest {
 
     @Test
     public void insertOrUpdateCodeByEmail() {
-        Integer integer = userMapper.insertOrUpdateCodeByEmail("xxxx@163.com", "123412");
+        Integer integer = userMapper.insertCodeByEmail("null", "0");
         System.out.println(integer);
     }
     @Test
@@ -48,4 +49,23 @@ public class UserMapperTest extends ProviderTest {
         String partern = "123qwe";
         userMapper.closeCodeStatus(tableName,column,partern);
     }
+    @Test
+    public void getUserIdByEmail(){
+        int userIdByEmail = userMapper.getUserIdByEmail("zengtong123456789@193.com");
+        System.out.println(userIdByEmail);
+    }
+
+    @Test
+    public void test(){
+        UserDTO userDTO = new UserDTO();
+        userDTO.setUserName("zztttt");
+        userDTO.setUserAddress("北京");
+        userDTO.setUserPhone("1413");
+        userDTO.setUserEmail("dw@173.com");
+        userMapper.inserNewUser(userDTO);
+        if(userDTO.getUserId()!=null){
+            System.out.println(userDTO.getUserId());
+        }
+    }
+
 }

@@ -1,0 +1,76 @@
+<!DOCTYPE html >
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <script src="http://ajax.aspnetcdn.com/ajax/jQuery/jquery-1.8.0.js"></script>
+</head>
+<body>
+    <form id="dataForm">
+        <!--用户名 订单号  下单日期  支付总金额-->
+        <span><h2>订单日期：[[${#dates.format(details.pruchase_date,'yyyy-MM-dd')}]]&nbsp;&nbsp;&nbsp;订单号：<span id="orderId">[[${details.orderId}]]</span> &nbsp;&nbsp;&nbsp; 用户：[[${details.userName}]]&nbsp;&nbsp;总支付金额：[[${details.payment}]]</h2></span>
+        <table>
+            <thead>
+                <tr>
+                    <td>商品ID</td>
+                    <td>商品名称</td>
+                    <td>购买数量</td>
+                    <td>单价</td>
+                </tr>
+            </thead>
+            <tbody>
+                <tr th:each="product,iterStat:${details.products}">
+                    <td><input th:value="${product.productId}" th:id="productId+${iterStat.count}" th:name="productId+${iterStat.count}" readonly></td>
+                    <td><input th:value="${product.productName}" th:id="productName+${iterStat.count}" readonly></td>
+                    <td><input th:value="${product.quantity}" th:id="productStock+${iterStat.count}" readonly></td>
+                    <td><input th:value="${product.price}" th:id="productPrice+${iterStat.count}" readonly></td>
+                </tr>
+                <tr th:colspan="3">
+                    <td th:colspan="2">
+                        <button id="btn" type="button" th:class="layui-btn">立刻支付</button>
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="6">
+                        <img  id="qrPath" src="" hidden>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </form>
+
+
+</body>
+<script>
+
+    $("#btn").click(function () {
+        console.log("点击按钮");
+         var orderId = "[[${details.orderId}]]";
+        $.ajax({
+            url:"/order/pay",
+            data:{
+                "orderId":orderId
+            },
+            type:"post",
+            dataType:"json",
+            success:function (result) {
+                var img ="";
+                if(result.code==200){
+                    img = "http://localhost:8080/getQrPic?code="+result.data;
+                    console.log(img);
+                    $("#qrPath").attr("src",img);
+                    $("#qrPath").removeAttr("hidden");
+                }else{
+                    alert("fail");
+                }
+            },
+            error:function () {
+                alert("boom");
+            }
+        })
+
+
+
+    });
+
+</script>
+
+</html>

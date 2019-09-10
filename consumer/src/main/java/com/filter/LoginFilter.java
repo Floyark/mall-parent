@@ -35,7 +35,7 @@ public class LoginFilter implements Filter{
             throw new MyException(ErrorMessage.PARAM_ERROR);
         }
 
-        System.out.println("通过filter验证邮箱和密码：" +inputAccount);
+        System.out.println("通过filter验证：" +inputAccount);
         filterChain.doFilter(httpServletRequest,httpServletResponse);
 
     }

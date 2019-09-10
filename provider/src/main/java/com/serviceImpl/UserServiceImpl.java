@@ -3,6 +3,7 @@ package com.serviceImpl;
 import com.alibaba.dubbo.config.annotation.Service;
 import com.dto.LoginDTO;
 import com.dto.UserCacheDTO;
+import com.dto.UserDTO;
 import com.exception.MyException;
 import com.mapper.UserMapper;
 import com.pojo.User;
@@ -19,7 +20,7 @@ import javax.annotation.Resource;
 import java.util.List;
 
 @org.springframework.stereotype.Service
-@Service
+@Service(interfaceClass = UserService.class)
 public class UserServiceImpl implements UserService {
 
     @Autowired
@@ -47,30 +48,40 @@ public class UserServiceImpl implements UserService {
     public void sendCodeByPhone(String pattern) {
         //随机生成code，将code保存到表中
         String code = createAndSaveCode(pattern, "phone");
-        //发送验证码
-        sendService.sendMessage(pattern,"验证码",code);
+        //发送验证码 todo 先注释了
+        //sendService.sendMessage(pattern,"验证码",code);
     }
     //****验证登录参数是否正确
     public Integer checkLoginParam(LoginDTO loginDTO,Boolean isEmail) {
-        int codeExist = 0;
+        Integer codeExist = 0;
         if(isEmail){
             //email登录
             codeExist = userMapper.checkCodeByEmail(loginDTO);
-            if(codeExist==1){
+            if(codeExist!=null){
                 //登录名和code值相匹配
                 //判断是游客还是会员
-                //查询数据库，返回0，说明是游客；返回其它数字，说明是会员
-                return userMapper.getUserIdByEmail(loginDTO.getInputAccount());
+                //返回null值为游客
+                Integer userId = userMapper.getUserIdByEmail(loginDTO.getInputAccount());
+                if(userId!=null){
+                    System.out.println("用户为会员："+userId);
+                    return userId;
+                }
+                return -codeExist;
             }
         }else{
             //手机号登录
             codeExist = userMapper.checkCodeByPhone(loginDTO);
-            if(codeExist==1){
+            if(codeExist!=null){
                 //登录名和code值相匹配
                 //判断是游客还是会员
-                //查询数据库，返回0，说明是游客；返回其它数字，说明是会员
-                return userMapper.getUserIdByPhone(loginDTO.getInputAccount());
+                //返回null为游客
+                Integer userId = userMapper.getUserIdByPhone(loginDTO.getInputAccount());
+                if(userId!=null){
+                    System.out.println("用户为会员："+userId);
+                    return userId;
+                }
             }
+            return -codeExist;
         }
         //返回-1 表示 登录的账号和验证码不匹配
         return -1;
@@ -80,9 +91,24 @@ public class UserServiceImpl implements UserService {
         redisTemplate.opsForValue().set(sessionId,userId);
     }
     //****sessionId为key，从redis中获取userId
-    public Integer getUserId(String sessionId, Integer userId) {
-         return redisTemplate.opsForValue().get(sessionId);
+    public Integer getUserId(String sessionId) {
+        return redisTemplate.opsForValue().get(sessionId);
     }
+    //****根据游客userId获取email
+    public String getUserIdByEmail(int userId) {
+        return userMapper.getGuestEmailByUserId(userId);
+    }
+    //****根据游客userId获取phone
+    public String getUserIdByPhone(int userId) {
+        return userMapper.getGuestPhoneByUserId(userId);
+    }
+
+    //####插入新user信息
+    public Integer insertNewUser(UserDTO userDTO) {
+        userMapper.inserNewUser(userDTO);
+        return userDTO.getUserId();
+    }
+
     //****生成验证码，并且保存到user副表中     (未完成)删除过期的code用 quarz更改条目状态
     public String createAndSaveCode(String pattern,String type){
 
@@ -107,7 +133,8 @@ public class UserServiceImpl implements UserService {
             //如果之前有申请过验证码，使其无效
             userMapper.closeCodeStatus(emailTableName,emailColumn,pattern);
             //将code插入 user_sub_mail表
-            int result = userMapper.insertOrUpdateCodeByEmail(pattern,code);
+            int result = userMapper.insertCodeByEmail(pattern,code);
+            userMapper.insertCodeByEmail("","0");
             if(result!=1){
                 throw new MyException(ErrorMessage.EMAIL_CODE_INSERT_ERROR);
             }
@@ -118,7 +145,8 @@ public class UserServiceImpl implements UserService {
             //如果之前有申请过验证码，使其无效
             userMapper.closeCodeStatus(phoneTableName,phoneColumn,pattern);
             //将code插入 user_sub_phone表
-            Integer result = userMapper.insertOrUpdateCodeByPhone(pattern, code);
+            Integer result = userMapper.insertCodeByPhone(pattern, code);
+            userMapper.insertCodeByPhone("","0");
             if(result!=1){
                 throw new MyException(ErrorMessage.PHONE_CODE_INSERT_ERROR);
             }

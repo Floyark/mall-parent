@@ -2,9 +2,11 @@ package com.mapper;
 
 import com.ProviderTest;
 import com.dto.InsertOrderItemDTO;
+import com.dto.QuantityDTO;
 import com.dto.SelectOrderDTO;
 import com.mysql.cj.x.protobuf.MysqlxCrud;
 import com.pojo.OrderStatus;
+import com.vo.OrderDetailVo;
 import com.vo.OrderVO;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,11 +28,12 @@ public class OrderMapperTest extends ProviderTest {
     public void getOrderInfo() {
 
         SelectOrderDTO selectOrderDTO = new SelectOrderDTO();
-        selectOrderDTO.setUserId(1);
-        selectOrderDTO.setProductName("西");
-
+        selectOrderDTO.setUserId(3);
+        selectOrderDTO.setOrderStatus(0);
         List<OrderVO> orderInfo = orderMapper.getOrderInfo(selectOrderDTO);
-        System.out.println();
+        for (OrderVO orderVO : orderInfo) {
+            System.out.println(orderVO.toString());
+        }
     }
 
     @Test
@@ -62,4 +65,22 @@ public class OrderMapperTest extends ProviderTest {
         System.out.println(i);
     }
 
+    @Test
+    public void getOrderDetailInfo() {
+
+        int userId = 3;
+        String orderId  = "214551a4-";
+
+        OrderDetailVo orderDetailInfo = orderMapper.getOrderDetailInfo(orderId, userId);
+
+            System.out.println(orderDetailInfo.toString());
+    }
+
+    @Test
+    public void getOrderItem() {
+        List<QuantityDTO> orderItem = orderMapper.getOrderItem("12bd8a41-");
+        for (QuantityDTO quantityDTO : orderItem) {
+            System.out.println(quantityDTO.toString());
+        }
+    }
 }

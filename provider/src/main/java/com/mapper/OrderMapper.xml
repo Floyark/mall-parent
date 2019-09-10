@@ -3,44 +3,39 @@
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd](http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.mapper.OrderMapper">
+    <!--####根据条件，获取用户历史订单信息-->
     <select id="getOrderInfo" parameterType="com.dto.SelectOrderDTO" resultType="com.vo.OrderVO">
         select
         o.order_id orderId,
-        o.user_id userId,
-        o.payment payment,
-        o.status status,
-        o.pruchase_date pruchaseDate,
         u.user_name userName,
-        p.product_name productName
+        o.status status,
+        o.payment payment,
+        o.pruchase_date pruchaseDate
         from orders o
-        inner join users u on u.user_id = o.user_id
-        <!--inner join order_product op on op.-->
-        inner join product p on p.product_id = o.product_id
+        inner join user u on u.user_id = o.user_id
         <where>
             <if test="userId!=null and userId !=0">
                 and o.user_id = #{userId}
             </if>
-            <if test="productName !=null and productName!=''">
-                and  p.product_name like '%${productName}%'
-            </if>
-            <if test="OrderStatus!=null and OrderStatus!=10">
-                and o.status = #{OrderStatus}
+            <if test="orderStatus!=null and orderStatus!=10">
+                and o.status = #{orderStatus}
             </if>
         </where>
     </select>
 
+    <!--####填充下拉列表-->
     <select id="getOrderStatus" resultType="com.pojo.OrderStatus">
         select order_status_id orderStatusId,order_status_name orderStatusName
         from order_status
     </select>
 
-    <!--新增用户订单-->
+    <!--####新增用户订单-->
     <insert id="insertNewOrder">
         insert into orders(order_id,user_id,payment,status,pruchase_date)
         values (#{orderId},#{userId},#{payment},0,now())
     </insert>
 
-    <!--将用户购买的商品记录到order-item表中-->
+    <!--####将用户购买的商品记录到order-item表中-->
     <insert id="insertNewOrderItem" parameterType="List">
         insert into order_item(order_id,product_id,product_quantity)
         values
@@ -48,4 +43,56 @@
             (#{item.orderId},#{item.productId},#{item.productQuantity})
         </foreach>
     </insert>
+
+    <!--####根据orderId，获取购买的商品信息-->
+    <select id="getOrderDetailInfo" resultMap="orderDetailVo">
+        select
+        o.order_id orderId,
+        o.user_id userId,
+        u.user_name userName,
+        o.pruchase_date pruchase_date,
+        p.product_name productName,
+        i.product_quantity quantity,
+        i.product_id productId,
+        o.payment payment,
+        p.product_price price
+
+        from orders o
+        inner join user u on o.user_id = u.user_id
+        inner join order_item i on o.order_id = i.order_id
+        inner join product p on p.product_id = i.product_id
+
+        where o.order_id = #{orderId} and o.user_id = #{userId}
+    </select>
+    <resultMap id="orderDetailVo" type="com.vo.OrderDetailVo">
+        <id property="orderId" column="orderId" javaType="string"></id>
+        <result property="userId" column="userId" javaType="integer"></result>
+        <result property="userName" column="userName" javaType="string"></result>
+        <result property="pruchase_date" column="pruchase_date" javaType="date"></result>
+        <result property="payment" column="payment" javaType="decimal"></result>
+        <collection property="products" ofType="com.dto.productInfoForOrderDTO">
+            <id property="productId" column="productId" javaType="integer"></id>
+            <result property="productName" column="productName" javaType="string"></result>
+            <result property="quantity" column="quantity" javaType="integer"></result>
+            <result property="price" column="price" javaType="decimal"></result>
+        </collection>
+
+
+    </resultMap>
+
+    <!--####检查用户id 订单id是否匹配-->
+    <select id="checkOrder" resultType="integer">
+        select 1
+        from orders
+        where order_id = #{orderId} and user_id = ${userId}
+        limit 1
+    </select>
+    <select id="getOrderItem" resultType="com.dto.QuantityDTO">
+        select
+        product_id productId,
+        product_quantity quantity
+        from order_item
+        where order_id = #{orderId}
+    </select>
+
 </mapper>

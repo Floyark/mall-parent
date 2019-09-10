@@ -46,7 +46,7 @@ public class LoginController {
         }
         //邮箱和手机的形式都不匹配
         else{
-            return  ResponseUtil.error("重新输入,参数有误");
+            return  ResponseUtil.error("重新输入,参数有误",40);
         }
         return ResponseUtil.successWithMsg("验证码已经发送~");
     }
@@ -62,10 +62,13 @@ public class LoginController {
         Boolean isEmail  = loginDTO.getInputAccount().matches("\\w+([-+.]\\w+)*@\\w+([-.]\\w+)*\\.\\w+([-.]\\w+)*");
         //判断验证码和登录名是否匹配，并且返回userId，0为游客
         Integer userId = userService.checkLoginParam(loginDTO,isEmail);
+        if(userId==-1){
+            return new ModelAndView("login/login");
+        }
         String sessionId = session.getId();
         userService.setUserId(sessionId,userId);
+        session.setAttribute("sessionId",sessionId);
         ModelAndView modelAndView = new ModelAndView("main/iframe/main");
-        modelAndView.addObject("SessionId",sessionId);
         return modelAndView;
     }
 

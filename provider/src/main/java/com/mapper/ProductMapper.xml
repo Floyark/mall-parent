@@ -82,9 +82,11 @@
         product_name productName
         from product
         <where>
+            product_stock > 0
             <if test="productName!=null and productName != ''">
-                product_name like  '%${productName}%'
+               and product_name like  '%${productName}%'
             </if>
+
         </where>
     </select>
 
@@ -116,16 +118,10 @@
     </select>
 
     <!--批量更新库存-->
-    <update id="updateProductStock" parameterType="List">
+    <update id="updateProductStock" parameterType="com.dto.QuantityDTO">
         update product
-        SET product_stock =
-        CASE product_id
-        <foreach collection="list" item="item">
-        WHEN ${item.productId} THEN ${item.quantity}
-            <!--WHEN #{item.productId} THEN #{item.quantity}-->
-        </foreach>
-        END
-        where product_id in (1,2,3,4,5)
+        SET product_stock = ${quantity}
+        where product_id = ${productId}
     </update>
 
     <!--获取订单中对应的商品库存-->

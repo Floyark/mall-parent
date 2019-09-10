@@ -12,6 +12,9 @@ public class MyException extends RuntimeException{
     public MyException(ErrorMessage errorMessage) {
         super(errorMessage.getMsg());
     }
+    public MyException(String str){
+        super(str);
+    }
 
 
 }

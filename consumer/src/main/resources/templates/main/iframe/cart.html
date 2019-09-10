@@ -35,9 +35,15 @@
                         <button id="btn" type="button" onclick="tijiao()" th:class="layui-btn">提交</button>
                     </td>
                 </tr>
+                <tr>
+                    <td colspan="6">
+                        <img  id="qrPath" src="" hidden>
+                    </td>
+                </tr>
             </tbody>
         </table>
     </form>
+
 
 </body>
 <script>
@@ -80,6 +86,7 @@
         var productQuantity ="quantity";
         for(var i =1;i<=amount;i++){
             var eachAmount = document.getElementById(productQuantity+i).getAttribute("value");
+            $('input').attr("readonly","readonly");
             var productId = document.getElementById(Id+i).getAttribute("value");
             text=text+productId+":"+eachAmount+",";
         }
@@ -91,8 +98,12 @@
             type:"post",
             dataType:"json",
             success:function (result) {
+                var img ="";
                 if(result.code==200){
-                    alert("success");
+                    img = "http://localhost:8080/getQrPic?code="+result.data;
+                    console.log(img);
+                    $("#qrPath").attr("src",img);
+                    $("#qrPath").removeAttr("hidden");
                 }else{
                     alert("fail");
                 }

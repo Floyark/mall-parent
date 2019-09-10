@@ -37,7 +37,7 @@ public class ResponseUtil {
      * @param msg
      * @return
      */
-    public static ServerResponse error(String msg){
-        return new ServerResponse(0,msg,null);
+    public static ServerResponse error(String msg,Integer code){
+        return new ServerResponse(code,msg,null);
     }
 }

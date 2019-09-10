@@ -37,6 +37,6 @@ public interface ProductMapper {
 
     List<QuantityDTO> getProductStockByOrderId(String orderId);
 
-    //todo 测试不通过
-    int updateProductStock(List<QuantityDTO> dto);
+
+    int updateProductStock(QuantityDTO dto);
 }

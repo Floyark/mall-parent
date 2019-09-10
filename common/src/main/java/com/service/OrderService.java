@@ -4,6 +4,7 @@ import com.alibaba.dubbo.config.annotation.Service;
 import com.dto.SelectOrderDTO;
 import com.github.pagehelper.PageInfo;
 import com.pojo.OrderStatus;
+import com.vo.OrderDetailVo;
 import com.vo.OrderVO;
 
 import javax.servlet.http.HttpServletRequest;
@@ -13,9 +14,9 @@ import java.util.concurrent.ConcurrentHashMap;
 
 
 public interface OrderService {
-    //获取order表信息
+    //####获取order表信息
     PageInfo<OrderVO> getOrderInfo(SelectOrderDTO selectOrderDTO);
-    //获取订单状态信息(填充下拉栏)
+    //####获取订单状态信息(填充下拉栏)
     List<OrderStatus> getOrderStatus();
 
     ConcurrentHashMap<Integer,Integer> parseItem(String context);
@@ -23,4 +24,11 @@ public interface OrderService {
     BigDecimal getOrderPayMent(ConcurrentHashMap<Integer, Integer> map);
 
     String createNewOrder(int userId, BigDecimal payment, ConcurrentHashMap<Integer, Integer> map);
+
+    //****根据用户id 订单id 查询对应的订单信息
+    OrderDetailVo getOrderDetailInfo(String orderId, Integer userId);
+
+    int checkOrder(Integer userId, String orderId);
+
+    ConcurrentHashMap<Integer, Integer> parseOrderDetails(String orderId);
 }

@@ -2,6 +2,7 @@ package com.serviceImpl;
 
 import com.alibaba.dubbo.config.annotation.Service;
 import com.dto.InsertOrderItemDTO;
+import com.dto.QuantityDTO;
 import com.dto.SelectOrderDTO;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
@@ -10,8 +11,11 @@ import com.mapper.ProductMapper;
 import com.pojo.OrderStatus;
 import com.pojo.Product;
 import com.service.OrderService;
+import com.service.PayService;
 import com.service.ProductService;
+import com.vo.OrderDetailVo;
 import com.vo.OrderVO;
+import org.apache.ibatis.annotations.Param;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.jaxb.SpringDataJaxb;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -23,11 +27,14 @@ import java.math.BigDecimal;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
-@Service
+@Service(interfaceClass = OrderService.class)
 public class OrderServiceImpl implements OrderService {
 
     @Autowired
     OrderMapper orderMapper;
+
+    @Autowired
+    PayService payService;
 
     @Resource
     RedisTemplate<String,Integer>redisTemplate;
@@ -37,20 +44,18 @@ public class OrderServiceImpl implements OrderService {
 
     //****根据userId获取历史订单信息
     public PageInfo<OrderVO> getOrderInfo(SelectOrderDTO selectOrderDTO) {
-
-        selectOrderDTO.setUserId(127);
-
-
         PageHelper.startPage(selectOrderDTO.getPage(),selectOrderDTO.getLimit());
         List<OrderVO> orders= orderMapper.getOrderInfo(selectOrderDTO);
         return new PageInfo<OrderVO>(orders);
     }
 
+    //****订单页面的下拉栏填充
     public List<OrderStatus> getOrderStatus() {
         List<OrderStatus> orderStatus = orderMapper.getOrderStatus();
         return orderStatus;
     }
 
+    //****分解传来的 productId和quantity 封装成map
     public ConcurrentHashMap<Integer,Integer> parseItem(String context) {
         //分解参数
         String[] arrys= context.split(",");
@@ -62,7 +67,7 @@ public class OrderServiceImpl implements OrderService {
         return map;
     }
 
-    //计算订单总金额  map中是商品id 和 商品单价
+    //**** 计算订单总金额  map中是商品id 和 商品单价
     public BigDecimal getOrderPayMent(ConcurrentHashMap<Integer, Integer> map) {
         BigDecimal payment =new BigDecimal(0);
         Set<Map.Entry<Integer, Integer>> set = map.entrySet();
@@ -76,6 +81,7 @@ public class OrderServiceImpl implements OrderService {
         return payment;
     }
 
+    //**** 生成订单，返回二维码支付
     @Transactional
     public String createNewOrder(int userId, BigDecimal payment, ConcurrentHashMap<Integer, Integer> map) {
         //1.新建order订单号
@@ -99,8 +105,31 @@ public class OrderServiceImpl implements OrderService {
             throw new RuntimeException("订单项目没有插入到item表中");
         }
 
-        String qrPath ="qrPath";
+        String qrPath = payService.getPayQr(map);
         return qrPath;
+    }
+
+    //**** 根据用户userId orderId 获取对应订单详情
+    public OrderDetailVo getOrderDetailInfo(String orderId, Integer userId) {
+        return orderMapper.getOrderDetailInfo(orderId,userId);
+    }
+
+    public int checkOrder(Integer userId, String orderId) {
+        Integer result = orderMapper.checkOrder(userId,orderId);
+        if(result != 1 ){
+            return -1;
+        }
+        return 1;
+    }
+
+    //**** 将productId userId 封装成map
+    public ConcurrentHashMap<Integer, Integer> parseOrderDetails(String orderId) {
+        List<QuantityDTO> quantityDTO = orderMapper.getOrderItem(orderId);
+        ConcurrentHashMap<Integer,Integer> concurrentHashMap = new ConcurrentHashMap<Integer, Integer>();
+        for (QuantityDTO dto : quantityDTO) {
+            concurrentHashMap.put(dto.getProductId(),dto.getQuantity());
+        }
+        return concurrentHashMap;
     }
 
 

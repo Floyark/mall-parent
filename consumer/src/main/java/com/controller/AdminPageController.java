@@ -4,6 +4,7 @@ import com.alibaba.dubbo.config.annotation.Reference;
 import com.pojo.OrderStatus;
 import com.service.OrderService;
 import com.service.ProductService;
+import com.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -22,15 +23,21 @@ public class AdminPageController {
     ProductService productService;
     @Reference
     OrderService orderService;
+    @Reference
+    UserService userService;
 
     @RequestMapping("/main.html")
     public ModelAndView toMain(HttpSession session){
-        session.setAttribute("userId",127);
+        String sessionId = session.getId();
+        Integer userId = userService.getUserId(sessionId);
+        if(userId==null){
+            return new ModelAndView("login/login");
+        }
         ModelAndView modelAndView =new ModelAndView("main/iframe/main");
         return modelAndView;
     }
 
-
+    //****订单页面的下拉栏填充
     @RequestMapping("/order.html")
     public ModelAndView toOrder(){
         ModelAndView modelAndView = new ModelAndView("main/iframe/order");
